@@ -1,0 +1,31 @@
+{
+  "name": "erasmus-connect-backend-express",
+  "version": "1.0.0",
+  "description": "Backend for Erasmus-Connect. A social platform to bring Erasmus students together",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JarneDeschacht/Erasmus-Connect-Backend-Express.git"
+  },
+  "keywords": [
+    "NodeJS",
+    "Express",
+    "SQL"
+  ],
+  "author": "Jarne Deschacht",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JarneDeschacht/Erasmus-Connect-Backend-Express/issues"
+  },
+  "homepage": "https://github.com/JarneDeschacht/Erasmus-Connect-Backend-Express#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.0"
+  }
+}
