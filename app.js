@@ -15,4 +15,12 @@ app.use((req, res, next) => {
 
 app.use(authRoutes);
 
+app.use((error, req, res, next) => {
+    console.log(error);
+    const statusCode = error.statusCode || 500;
+    const message = error.message;
+    const data = error.data;
+    res.status(statusCode).json({ message: message, data: data });
+});
+
 app.listen(8080);
