@@ -16,8 +16,10 @@ router.put('/signup', [
             }
         })
     }),
-    body('course').trim().isLength({ min: 1, max: 100 }).withMessage('course is required and may not contain more than 100 characters'),
-    body('password').trim().isLength({ min: 8, max: 100 }).withMessage('Password is required and must be between 8 and 100 characters')
+    body('password').trim().isLength({ min: 8, max: 100 }).withMessage('Password is required and must be between 8 and 100 characters'),
+    body('zipcode').not().isEmpty().isInt().withMessage('Zipcode is required and must be a number'),
+    body('cityName').trim().isLength({ min: 1, max: 100 }).withMessage('CityName is required and may not contain more than 100 characters'),
+    body('countryName').trim().isLength({ min: 1, max: 100 }).withMessage('CountryName is required and may not contain more than 100 characters'),
 ], authController.signup);
 
 router.post('/login', authController.login);

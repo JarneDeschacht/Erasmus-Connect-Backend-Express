@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const City = require('../models/city');
 
 exports.signup = async (req, res, next) => {
     try {
@@ -17,13 +18,22 @@ exports.signup = async (req, res, next) => {
         const lastName = req.body.lastName;
         const bio = req.body.bio;
         const email = req.body.email;
-        const course = req.body.course;
         const dateOfBirth = req.body.dateOfBirth;
+        const zipcode = req.body.zipcode;
+        const cityName = req.body.cityName;
+
+        let [rows] = await City.getCountryByName(req.body.countryName);
+        const country = rows[0];
+
+        const city = new City(null, zipcode, cityName, country.id);
+
+        [rows] = await city.save();
+        city.id = rows[0].cityid;
 
         const hashedPassword = await bcrypt.hash(req.body.password, 12);
-        const newUser = new User(null, firstName, lastName, bio, dateOfBirth, course, email, hashedPassword, null, null);
+        const newUser = new User(null, firstName, lastName, bio, dateOfBirth, null, email, hashedPassword, null, null,city.id);
 
-        const [rows] = await newUser.save();
+        [rows] = await newUser.save();
 
         const token = jwt.sign({
             email: email,
