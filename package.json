@@ -2,7 +2,7 @@
   "name": "erasmus-connect-backend-express",
   "version": "1.0.0",
   "description": "Backend for Erasmus-Connect. A social platform to bring Erasmus students together",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon app.js"
   },
@@ -22,8 +22,12 @@
   },
   "homepage": "https://github.com/JarneDeschacht/Erasmus-Connect-Backend-Express#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "express-validator": "^6.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.0.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.0"
