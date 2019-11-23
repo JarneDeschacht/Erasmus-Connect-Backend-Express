@@ -25,13 +25,12 @@ exports.signup = async (req, res, next) => {
         let [rows] = await City.getCountryByName(req.body.countryName);
         const country = rows[0];
 
-        const city = new City(null, zipcode, cityName, country.id);
-
+        const city = new City(null, zipcode, cityName, country.countryId);
         [rows] = await city.save();
         city.id = rows[0].cityid;
 
         const hashedPassword = await bcrypt.hash(req.body.password, 12);
-        const newUser = new User(null, firstName, lastName, bio, dateOfBirth, null, email, hashedPassword, null, null,city.id);
+        const newUser = new User(null, firstName, lastName, bio, dateOfBirth, null,null, email, hashedPassword, null, null, city.id);
 
         [rows] = await newUser.save();
 
@@ -56,10 +55,10 @@ exports.signup = async (req, res, next) => {
 }
 
 exports.login = async (req, res, next) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
     try {
+        const email = req.body.email;
+        const password = req.body.password;
+
         const [rows] = await User.findByEmail(email);
         const user = rows[0];
         if (!user) {
@@ -77,11 +76,11 @@ exports.login = async (req, res, next) => {
 
         const token = jwt.sign({
             email: user.email,
-            userId: user.id.toString()
+            userId: user.studentId.toString()
         }, 'someverysecrettokenforerasmusconnect', {
             expiresIn: '1h'
         });
-        res.status(200).json({ token: token, userId: user.id.toString() });
+        res.status(200).json({ token: token, userId: user.studentId.toString() });
     }
     catch (err) {
         if (!err.statusCode) {
