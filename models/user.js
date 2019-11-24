@@ -2,7 +2,7 @@ const db = require('../util/database');
 
 module.exports = class User {
     constructor(id, firstName, lastName, bio, dateOfBirth, homeCourse, erasmusCourse,
-        email, password, homeUniversity, erasmusUniversity, homeCityId, ) {
+        email, password, homeUniversity, erasmusUniversity, homeCityId, imageUrl) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -15,14 +15,15 @@ module.exports = class User {
         this.homeUniversity = homeUniversity;
         this.erasmusUniversity = erasmusUniversity;
         this.homeCityId = homeCityId;
+        this.imageUrl = imageUrl;
     }
     save() {
         return db.execute(
             `INSERT INTO student (firstName,lastName,bio,dateOfBirth,homeCourse,erasmusCourse,
-                email,password,homeUniversity,erasmusUniversity,city_id)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                email,password,homeUniversity,erasmusUniversity,city_id,imageUrl)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [this.firstName, this.lastName, this.bio, this.dateOfBirth, this.homeCourse, this.erasmusCourse,
-            this.email, this.password, this.homeUniversity, this.erasmusUniversity, this.homeCityId]
+            this.email, this.password, this.homeUniversity, this.erasmusUniversity, this.homeCityId, this.imageUrl]
         );
     }
     static findById(id) {

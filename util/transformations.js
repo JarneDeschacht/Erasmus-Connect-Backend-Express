@@ -8,6 +8,7 @@ exports.transformUsers = (users) => {
             lastName: user.lastName,
             bio: user.bio,
             dateOfBirth: user.dateOfBirth,
+            imageUrl: user.imageUrl,
             city: {
                 id: user.cityId,
                 name: user.cityName,

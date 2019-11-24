@@ -30,7 +30,8 @@ exports.signup = async (req, res, next) => {
         city.id = rows[0].cityid;
 
         const hashedPassword = await bcrypt.hash(req.body.password, 12);
-        const newUser = new User(null, firstName, lastName, bio, dateOfBirth, null,null, email, hashedPassword, null, null, city.id);
+        const newUser = new User(null, firstName, lastName, bio, dateOfBirth,
+            null, null, email, hashedPassword, null, null, city.id, null);
 
         [rows] = await newUser.save();
 
@@ -62,7 +63,7 @@ exports.login = async (req, res, next) => {
         const [rows] = await User.findByEmail(email);
         const user = rows[0];
         if (!user) {
-            const error = new Error('There is no user with this email!');
+            const error = new Error('There is no user with these credentials!');
             error.statusCode = 401;
             throw (error);
         }

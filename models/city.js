@@ -15,4 +15,7 @@ module.exports = class City {
     static getCountryByName(countryName) {
         return db.execute('SELECT * FROM country WHERE country.countryName = ?', [countryName]);
     }
+    static getAllCountries() {
+        return db.execute('SELECT * FROM country');
+    }
 }
