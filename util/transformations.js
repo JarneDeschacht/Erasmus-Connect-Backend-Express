@@ -1,6 +1,10 @@
-exports.transformUsers = (users) => {
-    return users.map((user) => {
-        return {
+const University = require('../models/university');
+
+exports.transformUsers = async (users) => {
+    const promises = users.map(async user => {
+        const [homeUniversity] = await University.getById(user.homeUniversity);
+        const [erasmusUniversity] = await University.getById(user.erasmusUniversity);
+        return await {
             id: user.studentId,
             email: user.email,
             password: user.password,
@@ -21,8 +25,39 @@ exports.transformUsers = (users) => {
             },
             homeCourse: user.homeCourse,
             erasmusCourse: user.erasmusCourse,
-            homeUniversity: { ...user.homeUniversity },
-            erasmusUniversity: { ...user.erasmusUniversity }
+            homeUniversity: homeUniversity.length ? {
+                id: homeUniversity[0].universityId,
+                name: homeUniversity[0].name,
+                longitude: homeUniversity[0].longitude,
+                latitude: homeUniversity[0].latitude,
+                city: {
+                    id: homeUniversity[0].cityId,
+                    name: homeUniversity[0].cityName,
+                    zipcode: homeUniversity[0].cityZipcode,
+                    country: {
+                        id: homeUniversity[0].countryId,
+                        name: homeUniversity[0].countryName,
+                        code: homeUniversity[0].countryCode
+                    }
+                }
+            } : {city:{country:{}}},
+            erasmusUniversity: erasmusUniversity.length ? {
+                id: erasmusUniversity[0].universityId,
+                name: erasmusUniversity[0].name,
+                longitude: erasmusUniversity[0].longitude,
+                latitude: erasmusUniversity[0].latitude,
+                city: {
+                    id: erasmusUniversity[0].cityId,
+                    name: erasmusUniversity[0].cityName,
+                    zipcode: erasmusUniversity[0].cityZipcode,
+                    country: {
+                        id: erasmusUniversity[0].countryId,
+                        name: erasmusUniversity[0].countryName,
+                        code: erasmusUniversity[0].countryCode
+                    }
+                }
+            } : {city:{country:{}}},
         }
     })
+    return await Promise.all(promises);
 }

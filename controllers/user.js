@@ -17,7 +17,7 @@ exports.getStudents = async (req, res, next) => {
         }
         res.status(200).json({
             message: 'Users fetched succesfully',
-            users: transformUsers([...users])
+            users: await transformUsers([...users])
         });
     } catch (err) {
         if (!err.statusCode) {
@@ -32,7 +32,7 @@ exports.getStudent = async (req, res, next) => {
     try {
         res.status(200).json({
             message: 'User fetched succesfully',
-            user: transformUsers([await fetchStudent(studentId)])[0]
+            user: (await transformUsers([await fetchStudent(studentId)]))[0]
         });
     } catch (err) {
         if (!err.statusCode) {
@@ -47,7 +47,7 @@ exports.getLoggedInUser = async (req, res, next) => {
     try {
         res.status(200).json({
             message: 'Profile fetched succesfully',
-            user: transformUsers([await fetchStudent(userId)])[0]
+            user: (await transformUsers([await fetchStudent(userId)]))[0]
         });
     } catch (err) {
         if (!err.statusCode) {

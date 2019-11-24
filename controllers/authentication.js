@@ -30,8 +30,7 @@ exports.signup = async (req, res, next) => {
         city.id = rows[0].cityid;
 
         const hashedPassword = await bcrypt.hash(req.body.password, 12);
-        const newUser = new User(null, firstName, lastName, bio, dateOfBirth,
-            null, null, email, hashedPassword, null, null, city.id, null);
+        const newUser = new User(null, firstName, lastName, bio, dateOfBirth, email, hashedPassword, city.id);
 
         [rows] = await newUser.save();
 
