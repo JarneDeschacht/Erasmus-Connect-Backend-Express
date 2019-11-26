@@ -1,29 +1,29 @@
 const db = require('../util/database');
 
 module.exports = class User {
-    constructor(id, firstName, lastName, bio, dateOfBirth, email, password, cityId) {
+    constructor(id, firstName, lastName, phonenumber, dateOfBirth, email, password, country_id) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.bio = bio;
+        this.bio = "Add your personal bio!";
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.password = password;
-        this.cityId = cityId;
+        this.country_id = country_id;
+        this.phoneNumber = phonenumber;
     }
     save() {
         return db.execute(
             `INSERT INTO student (firstName,lastName,bio,dateOfBirth,homeCourse,erasmusCourse,
-                email,password,homeUniversity,erasmusUniversity,imageUrl,city_id)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                email,password,homeUniversity,erasmusUniversity,imageUrl,country_id,phoneNumber)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [this.firstName, this.lastName, this.bio, this.dateOfBirth, null, null,
-            this.email, this.password, null, null, null,this.cityId]
+            this.email, this.password, null, null, null, this.country_id, this.phoneNumber]
         );
     }
     static findById(id) {
         return db.execute(`
             SELECT * FROM student
-            JOIN city ON city_id = city.cityId
             JOIN country ON country_id = country.countryId
             WHERE studentId = ?`, [id]);
     }
@@ -33,7 +33,6 @@ module.exports = class User {
     static getAll(id) {
         return db.execute(`
             SELECT * FROM student
-            JOIN city ON city_id = city.cityId
             JOIN country ON country_id = country.countryId
             WHERE studentId <> ?
             `, [id]);

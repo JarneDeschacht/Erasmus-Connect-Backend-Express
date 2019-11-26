@@ -10,18 +10,14 @@ exports.transformUsers = async (users) => {
             password: user.password,
             firstName: user.firstName,
             lastName: user.lastName,
+            phoneNumber: user.phoneNumber,
             bio: user.bio,
             dateOfBirth: user.dateOfBirth,
             imageUrl: user.imageUrl,
-            city: {
-                id: user.cityId,
-                name: user.cityName,
-                zipcode: user.cityZipcode,
-                country: {
-                    id: user.countryId,
-                    name: user.countryName,
-                    code: user.countryCode
-                }
+            country: {
+                id: user.countryId,
+                name: user.countryName,
+                code: user.countryCode
             },
             homeCourse: user.homeCourse,
             erasmusCourse: user.erasmusCourse,
@@ -40,7 +36,7 @@ exports.transformUsers = async (users) => {
                         code: homeUniversity[0].countryCode
                     }
                 }
-            } : {city:{country:{}}},
+            } : { city: { country: {} } },
             erasmusUniversity: erasmusUniversity.length ? {
                 id: erasmusUniversity[0].universityId,
                 name: erasmusUniversity[0].name,
@@ -56,7 +52,7 @@ exports.transformUsers = async (users) => {
                         code: erasmusUniversity[0].countryCode
                     }
                 }
-            } : {city:{country:{}}},
+            } : { city: { country: {} } },
         }
     })
     return await Promise.all(promises);
