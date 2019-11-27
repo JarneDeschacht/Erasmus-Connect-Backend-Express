@@ -1,0 +1,8 @@
+{
+    "studentId": {
+        "type": "PASSWORDFORGOTTEN_NEWPASSWORD",
+        "newPassword": "-----------------------------------------",
+        "studentId": 22
+    },
+    "newPassword": "-----------------------------------------"
+}

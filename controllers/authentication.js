@@ -2,6 +2,14 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const nodemailer = require('nodemailer')
+const sendgridTransport = require('nodemailer-sendgrid-transport')
+
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth: {
+        api_key: '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'
+    }
+}))
 
 exports.signup = async (req, res, next) => {
     try {
@@ -79,4 +87,65 @@ exports.login = async (req, res, next) => {
         }
         next(err);
     }
+}
+
+exports.forgotPassword = async (req, res, next) => {
+    try {
+        const email = req.body.email
+        const [rows] = await User.findByEmail(email);
+        const user = rows[0];
+
+        if (!user) {
+            console.log('the user was not found, try again dipshit')
+
+            const error = new Error('There is no account with this email.');
+            throw (error);
+        }
+
+        await User.setPasswordChangeExpiration(user.studentId)
+
+        await transporter.sendMail({
+            to: email,
+            from: 'esn-connect@erasmus.com',
+            subject: 'reset password',
+            html: `
+            <p>
+                You have requested to change your password. <br/>
+                click on the folowing link and pick a new password. <br/>
+
+                <a href="http://localhost:3000/forgotPassword/${user.studentId}"> click here to reset password </a>
+            </p>
+            `
+        })
+
+        res.status(200).json({
+            message: 'expiration date for changing password has been set',
+        });
+    }
+
+    catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
+
+exports.setNewPassword = async(req, res, next) => {
+    const studentId = req.body.studentId
+    const newPassword = req.body.newPassword
+    const encryptedPassword =  await bcrypt.hash(newPassword, 12)
+
+    console.log(studentId)
+    console.log(newPassword)
+    console.log(encryptedPassword)
+
+    await User.setNewPassword(studentId, encryptedPassword)
+
+
+
+
+
+
 }

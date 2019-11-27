@@ -22,4 +22,8 @@ router.put('/signup', [
 
 router.post('/login', authController.login);
 
+router.post('/forgotPassword', authController.forgotPassword)
+
+router.post('/setNewPassword', authController.setNewPassword)
+
 module.exports = router;
