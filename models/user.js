@@ -16,7 +16,7 @@ module.exports = class User {
         return db.execute(
             `INSERT INTO student (firstName,lastName,bio,dateOfBirth,homeCourse,erasmusCourse,
                 email,password,homeUniversity,erasmusUniversity,imageUrl,country_id,phoneNumber, changePasswordExpiration)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
             [this.firstName, this.lastName, this.bio, this.dateOfBirth, null, null,
             this.email, this.password, null, null, null, this.country_id, this.phoneNumber, null]
         );
