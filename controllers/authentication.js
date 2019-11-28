@@ -7,7 +7,7 @@ const sendgridTransport = require('nodemailer-sendgrid-transport')
 
 const transporter = nodemailer.createTransport(sendgridTransport({
     auth: {
-        api_key: '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'
+        // api_key: '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'
     }
 }))
 
@@ -96,8 +96,6 @@ exports.forgotPassword = async (req, res, next) => {
         const user = rows[0];
 
         if (!user) {
-            console.log('the user was not found, try again dipshit')
-
             const error = new Error('There is no account with this email.');
             throw (error);
         }
@@ -143,9 +141,7 @@ exports.setNewPassword = async(req, res, next) => {
 
     await User.setNewPassword(studentId, encryptedPassword)
 
-
-
-
-
-
+    res.status(200).json({
+        message: 'password was updated',
+    });
 }
