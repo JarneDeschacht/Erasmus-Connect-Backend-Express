@@ -87,6 +87,7 @@ exports.forgotPassword = async (req, res, next) => {
         const email = req.body.email
         const [rows] = await User.findByEmail(email);
         const user = rows[0];
+        console.log(req.body.email)
 
         if (!user) {
             const error = new Error('There is no account with this email.');
@@ -95,6 +96,8 @@ exports.forgotPassword = async (req, res, next) => {
 
         await User.setPasswordChangeExpiration(user.studentId)
 
+
+        
         await transporter.sendMail({
             to: email,
             from: 'esn-connect@erasmus.com',
@@ -104,7 +107,7 @@ exports.forgotPassword = async (req, res, next) => {
                 You have requested to change your password. <br/>
                 click on the folowing link and pick a new password. <br/>
 
-                <a href="http://localhost:3000/forgotPassword/${user.studentId}"> click here to reset password </a>
+                <a href="http://localhost:3000/forgotPassword/${user.userId}"> click here to reset password </a>
             </p>
             `
         })
@@ -129,35 +132,25 @@ exports.setNewPassword = async (req, res, next) => {
         const newPassword = req.body.newPassword
         const encryptedPassword = await bcrypt.hash(newPassword, 12)
 
-        console.log(studentId)
-        console.log(newPassword)
-        console.log(encryptedPassword)
-
-        await User.setNewPassword(studentId, encryptedPassword)
+        
+       
 
         //checken timestamp
-
         const [rows] = await User.findById(studentId)
         const user = rows[0]
         const expiryDate = user.changePasswordExpiration
         const currentDate = new Date()
-
-
-        console.log(currentDate)
-        console.log(expiryDate)
-
-        console.log(currentDate.getTime())
-        console.log(expiryDate.getTime())
 
         if (currentDate.getTime() > expiryDate.getTime()) {
             const error = new Error('expiration time for changing password expired');
             throw (error);
         }
 
-
         //verwijderen van timestamp als het werkt
         await User.removePasswordExpiration(studentId);
 
+
+        await User.setNewPassword(studentId, encryptedPassword)
 
 
         res.status(200).json({

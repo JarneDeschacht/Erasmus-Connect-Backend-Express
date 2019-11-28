@@ -23,7 +23,7 @@ module.exports = class User {
     }
     static setPasswordChangeExpiration(id) {
         const currentDate = new Date();
-        const sqlDateTime = `${currentDate.getFullYear()}-${currentDate.getMonth()+1}-${currentDate.getDate()} ${currentDate.getHours() + 1}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
+        const sqlDateTime = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours() + 1}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
 
         return db.execute(`
             UPDATE student
@@ -33,13 +33,12 @@ module.exports = class User {
 
     static removePasswordExpiration(id) {
         return db.execute(`
-        DELETE FROM student
-        WHERE studentId = ?`, [id])
+            UPDATE student
+            SET changePasswordExpiration = null
+            WHERE studentId = ?`, [id]);
     }
 
     static setNewPassword(id, newPassword) {
-        console.log(id)
-        console.log(newPassword)
         return db.execute(`
             UPDATE student
             SET password = ?
