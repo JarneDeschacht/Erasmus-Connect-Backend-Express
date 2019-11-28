@@ -2,14 +2,7 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const nodemailer = require('nodemailer')
-const sendgridTransport = require('nodemailer-sendgrid-transport')
-
-const transporter = nodemailer.createTransport(sendgridTransport({
-    auth: {
-        api_key: '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'
-    }
-}))
+const transporter = require('../util/transporter');
 
 exports.signup = async (req, res, next) => {
     try {
@@ -132,10 +125,10 @@ exports.forgotPassword = async (req, res, next) => {
 }
 
 
-exports.setNewPassword = async(req, res, next) => {
+exports.setNewPassword = async (req, res, next) => {
     const studentId = req.body.studentId
     const newPassword = req.body.newPassword
-    const encryptedPassword =  await bcrypt.hash(newPassword, 12)
+    const encryptedPassword = await bcrypt.hash(newPassword, 12)
 
     console.log(studentId)
     console.log(newPassword)

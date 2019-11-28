@@ -24,8 +24,6 @@ exports.transformUsers = async (users) => {
             homeUniversity: homeUniversity.length ? {
                 id: homeUniversity[0].universityId,
                 name: homeUniversity[0].name,
-                longitude: homeUniversity[0].longitude,
-                latitude: homeUniversity[0].latitude,
                 city: {
                     id: homeUniversity[0].cityId,
                     name: homeUniversity[0].cityName,
@@ -40,8 +38,6 @@ exports.transformUsers = async (users) => {
             erasmusUniversity: erasmusUniversity.length ? {
                 id: erasmusUniversity[0].universityId,
                 name: erasmusUniversity[0].name,
-                longitude: erasmusUniversity[0].longitude,
-                latitude: erasmusUniversity[0].latitude,
                 city: {
                     id: erasmusUniversity[0].cityId,
                     name: erasmusUniversity[0].cityName,
