@@ -23,25 +23,27 @@ module.exports = class User {
     }
     static setPasswordChangeExpiration(id) {
         const currentDate = new Date();
-        const sqlDateTime = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDay()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
-        
-        console.log(sqlDateTime)
-        console.log(id)
-
+        const sqlDateTime = `${currentDate.getFullYear()}-${currentDate.getMonth()+1}-${currentDate.getDate()} ${currentDate.getHours() + 1}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
 
         return db.execute(`
             UPDATE student
             SET changePasswordExpiration = ?
-            WHERE studentId = ?`,[sqlDateTime, id]);
+            WHERE studentId = ?`, [sqlDateTime, id]);
     }
 
-    static setNewPassword(id, newPassword){
+    static removePasswordExpiration(id) {
+        return db.execute(`
+        DELETE FROM student
+        WHERE studentId = ?`, [id])
+    }
+
+    static setNewPassword(id, newPassword) {
         console.log(id)
         console.log(newPassword)
         return db.execute(`
             UPDATE student
             SET password = ?
-            WHERE studentId = ?`,[newPassword, id]);
+            WHERE studentId = ?`, [newPassword, id]);
     }
 
     static findById(id) {
@@ -55,6 +57,7 @@ module.exports = class User {
         return db.execute('SELECT * FROM student WHERE student.email = ?', [email]);
     }
 
+    //get all students except the loged in one
     static getAll(id) {
         return db.execute(`
             SELECT * FROM student

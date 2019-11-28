@@ -88,3 +88,4 @@ const fetchStudent = async (id) => {
     }
     return user;
 }
+

@@ -124,17 +124,53 @@ exports.forgotPassword = async (req, res, next) => {
 
 
 exports.setNewPassword = async (req, res, next) => {
-    const studentId = req.body.studentId
-    const newPassword = req.body.newPassword
-    const encryptedPassword = await bcrypt.hash(newPassword, 12)
+    try {
+        const studentId = req.body.studentId
+        const newPassword = req.body.newPassword
+        const encryptedPassword = await bcrypt.hash(newPassword, 12)
 
-    console.log(studentId)
-    console.log(newPassword)
-    console.log(encryptedPassword)
+        console.log(studentId)
+        console.log(newPassword)
+        console.log(encryptedPassword)
 
-    await User.setNewPassword(studentId, encryptedPassword)
+        await User.setNewPassword(studentId, encryptedPassword)
 
-    res.status(200).json({
-        message: 'password was updated',
-    });
+        //checken timestamp
+
+        const [rows] = await User.findById(studentId)
+        const user = rows[0]
+        const expiryDate = user.changePasswordExpiration
+        const currentDate = new Date()
+
+
+        console.log(currentDate)
+        console.log(expiryDate)
+
+        console.log(currentDate.getTime())
+        console.log(expiryDate.getTime())
+
+        if (currentDate.getTime() > expiryDate.getTime()) {
+            const error = new Error('expiration time for changing password expired');
+            throw (error);
+        }
+
+
+        //verwijderen van timestamp als het werkt
+        await User.removePasswordExpiration(studentId);
+
+
+
+        res.status(200).json({
+            message: 'password was updated',
+        });
+    }
+
+    catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+
+
 }
