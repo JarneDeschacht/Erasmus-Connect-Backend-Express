@@ -122,6 +122,69 @@ exports.getCountries = async (req, res, next) => {
     }
 }
 
+exports.getConnections = async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+
+        const response = {
+            connections: [],
+            sended: [],
+            received: []
+        }
+
+
+        console.log(await UserConnection.getSentPendingRequestsFromUser(userId))
+
+        // get all the accepted requests
+        let [connectionRows] = await UserConnection.getAllConnectionsFromUser(userId);
+        connectionRows.forEach(rec => {
+            if (rec.user1Id === userId) {
+                response.connections.push({
+                    userId: rec.user2Id
+                })
+            }
+            else {
+                response.connections.push({
+                    userId: rec.user1Id,
+                    firstName: rec.firstName,
+                    lastName: rec.lastName
+                })
+            }
+        })
+
+        //get all the sended, still pending requests
+        let [sendedRows] = await UserConnection.getSentPendingRequestsFromUser(userId); sendedRows.forEach(rec => {
+            response.sended.push({
+                userId: rec.user2Id,
+                firstName: rec.firstName,
+                lastName: rec.lastName
+            })
+        })
+
+
+        // //get all the received, still pending requests
+        let [receivedRows] = await UserConnection.getReceivedPendingRequestsFromUser(userId);
+        receivedRows.forEach(rec => {
+            response.received.push({
+                userId: rec.user1Id,
+                firstName: rec.firstName,
+                lastName: rec.lastName
+            })
+        })
+
+
+        //send a response
+        res.status(200).json({
+            ...response
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
 exports.connectToStudent = async (req, res, next) => {
     try {
         const userId = req.body.userId;
@@ -164,7 +227,6 @@ exports.connectToStudent = async (req, res, next) => {
             }
         }
 
-
         await User.connectToStudent(userId, connectToId)
 
         res.status(200).json({
@@ -186,12 +248,6 @@ exports.acceptConnection = async (req, res, next) => {
         const [rows] = await UserConnection.getConnctionFromUsers(senderId, receiverId)
         const connection = rows[0]
 
-        if (connection.user2Id !== receiverId) {
-            const error = new Error('the user that accepts the request was not found');
-            error.statusCode = 401;
-            throw (error);
-        }
-
         if (connection.accepted === 'true') {
             const error = new Error('this connection already exists');
             error.statusCode = 401;
@@ -212,12 +268,34 @@ exports.acceptConnection = async (req, res, next) => {
 }
 
 exports.refuseConnection = async (req, res, next) => {
-    try{
+    try {
         const senderId = req.body.sender;
         const receiverId = req.body.receiver
 
+        const [rows] = await UserConnection.getConnctionFromUsers(senderId, receiverId)
+        const connection = rows[0]
+        if (!connection) {
+            const error = new Error('there was no request between these users');
+            error.statusCode = 401;
+            throw (error);
+        }
 
-    }catch(err){
+        console.log(connection.accepted)
+        if (connection.accepted === 'true') {
+            const error = new Error('the request was already accepted');
+            error.statusCode = 401;
+            throw (error);
+        }
+
+        console.log(connection)
+        await UserConnection.deleteConnection(connection.connectionId)
+
+
+        res.status(200).json({
+            message: 'the connection was refused'
+        });
+
+    } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
         }

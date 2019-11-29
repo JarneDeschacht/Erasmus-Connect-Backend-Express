@@ -23,6 +23,47 @@ module.exports = class UserConnection {
         `, [userId])
     }
 
+    static getAllConnectionsFromUser(userId) {
+        return db.execute(`
+            SELECT user1Id,user2Id, stud.lastName, stud.firstName
+            FROM userConnection as con
+            JOIN student as stud
+            ON stud.studentId = con.user1Id
+            WHERE (user1Id = ? OR user2Id = ?)
+            AND accepted = 'true';
+        `, [userId, userId])
+    }
+
+    static getSentPendingRequestsFromUser(userId) {
+        return db.execute(`
+            SELECT user2Id, stud.lastName, stud.firstName
+            FROM userConnection as con
+            JOIN student as stud
+            ON stud.studentId = con.user1Id
+            WHERE user1Id = ?
+            AND accepted = 'false'
+        `, [userId])
+    }
+
+    static getReceivedPendingRequestsFromUser(userId) {
+        return db.execute(`
+            SELECT user1Id, stud.lastName, stud.firstName
+            FROM userConnection as con
+            JOIN student as stud
+            ON stud.studentId = con.user1Id
+            WHERE user2Id = ?
+            AND accepted = 'false'
+        `, [userId])
+    }
+
+    static getConnctionFromUsers(senderId, receiverId) {
+        return db.execute(`
+            select * 
+            from userConnection
+            where user1Id = ? AND user2Id = ?
+        `, [senderId, receiverId])
+    }
+
     static acceptConnection(id) {
         return db.execute(`
             UPDATE userConnection
@@ -31,12 +72,10 @@ module.exports = class UserConnection {
         `, [id])
     }
 
-    static getConnctionFromUsers(senderId, receiverId) {
-        console.log(receiverId)
+    static deleteConnection(connectionId) {
         return db.execute(`
-            select * 
-            from userConnection
-            where user1Id = ? AND user2Id = ?
-        `, [senderId, receiverId])
+            DELETE FROM userConnection
+            WHERE connectionId = ?
+        `, [connectionId])
     }
-}
+}   
