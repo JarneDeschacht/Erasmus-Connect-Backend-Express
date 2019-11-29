@@ -9,5 +9,7 @@ router.get('/students', isAuth, userController.getStudents);
 router.get('/student/:studentId', isAuth, userController.getStudent);
 router.patch('/register-erasmus', isAuth, userController.registerErasmus);
 router.get('/countries',userController.getCountries);
+router.post('/connectToStudent', userController.connectToStudent)
+router.post('/acceptConnection', userController.acceptConnection)
 
 module.exports = router;
