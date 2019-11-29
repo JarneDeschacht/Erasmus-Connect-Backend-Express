@@ -16,7 +16,7 @@ module.exports = class User {
         return db.execute(
             `INSERT INTO student (firstName,lastName,bio,dateOfBirth,homeCourse,erasmusCourse,
                 email,password,homeUniversity,erasmusUniversity,imageUrl,country_id,phoneNumber, changePasswordExpiration)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [this.firstName, this.lastName, this.bio, this.dateOfBirth, null, null,
             this.email, this.password, null, null, null, this.country_id, this.phoneNumber, null]
         );
@@ -24,7 +24,7 @@ module.exports = class User {
     static setPasswordChangeExpiration(id) {
         const currentDate = new Date();
         const sqlDateTime = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDay()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
-        
+
         console.log(sqlDateTime)
         console.log(id)
 
@@ -32,16 +32,16 @@ module.exports = class User {
         return db.execute(`
             UPDATE student
             SET changePasswordExpiration = ?
-            WHERE studentId = ?`,[sqlDateTime, id]);
+            WHERE studentId = ?`, [sqlDateTime, id]);
     }
 
-    static setNewPassword(id, newPassword){
+    static setNewPassword(id, newPassword) {
         console.log(id)
         console.log(newPassword)
         return db.execute(`
             UPDATE student
             SET password = ?
-            WHERE studentId = ?`,[newPassword, id]);
+            WHERE studentId = ?`, [newPassword, id]);
     }
 
     static findById(id) {
@@ -61,5 +61,16 @@ module.exports = class User {
             JOIN country ON country_id = country.countryId
             WHERE studentId <> ?
             `, [id]);
+    }
+    static registerErasmus(userId, homeCourse, homeUniversityId, erasmusCourse, erasmusUniversityId, imageUrl) {
+        return db.execute(`
+            UPDATE student
+            SET homeCourse = ?,
+                erasmusCourse = ?,
+                homeUniversity = ?,
+                erasmusUniversity = ?,
+                imageUrl = ?
+            WHERE studentId = ?
+        `, [homeCourse, erasmusCourse, homeUniversityId, erasmusUniversityId, imageUrl, userId])
     }
 }

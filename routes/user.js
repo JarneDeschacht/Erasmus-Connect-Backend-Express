@@ -7,7 +7,9 @@ const router = express.Router();
 router.get('/my-profile', isAuth, userController.getLoggedInUser);
 router.get('/students', isAuth, userController.getStudents);
 router.get('/student/:studentId', isAuth, userController.getStudent);
-router.patch('/register-erasmus', isAuth, userController.registerErasmus);
-router.get('/countries',userController.getCountries);
+router.post('/register-erasmus', [
+
+], isAuth, userController.registerErasmus);
+router.get('/countries', userController.getCountries);
 
 module.exports = router;

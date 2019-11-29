@@ -16,7 +16,7 @@ router.put('/signup', [
             }
         })
     }),
-    body('password').trim().isLength({ min: 8, max: 100 }).withMessage('Password is required and must be between 8 and 100 characters'),
+    body('password').trim().isLength({ min: 6, max: 100 }).withMessage('Password is required and must be between 6 and 100 characters'),
     body('countryId').not().isEmpty().isInt().withMessage('Country id is required and must be a number')
 ], authController.signup);
 

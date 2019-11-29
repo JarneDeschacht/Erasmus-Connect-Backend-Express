@@ -27,7 +27,6 @@ exports.transformUsers = async (users) => {
                 city: {
                     id: homeUniversity[0].cityId,
                     name: homeUniversity[0].cityName,
-                    zipcode: homeUniversity[0].cityZipcode,
                     country: {
                         id: homeUniversity[0].countryId,
                         name: homeUniversity[0].countryName,
@@ -41,7 +40,6 @@ exports.transformUsers = async (users) => {
                 city: {
                     id: erasmusUniversity[0].cityId,
                     name: erasmusUniversity[0].cityName,
-                    zipcode: erasmusUniversity[0].cityZipcode,
                     country: {
                         id: erasmusUniversity[0].countryId,
                         name: erasmusUniversity[0].countryName,

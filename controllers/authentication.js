@@ -89,8 +89,6 @@ exports.forgotPassword = async (req, res, next) => {
         const user = rows[0];
 
         if (!user) {
-            console.log('the user was not found, try again dipshit')
-
             const error = new Error('There is no account with this email.');
             throw (error);
         }
@@ -129,10 +127,6 @@ exports.setNewPassword = async (req, res, next) => {
     const studentId = req.body.studentId
     const newPassword = req.body.newPassword
     const encryptedPassword = await bcrypt.hash(newPassword, 12)
-
-    console.log(studentId)
-    console.log(newPassword)
-    console.log(encryptedPassword)
 
     await User.setNewPassword(studentId, encryptedPassword)
 
