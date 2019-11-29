@@ -143,7 +143,6 @@ exports.connectToStudent = async (req, res, next) => {
             throw (error);
         }
 
-
         //checking if the connection already exists!!!!!!!
         [rows] = await UserConnection.getConnectionByUser1Id(userId)
         let con = rows[0]
@@ -164,22 +163,6 @@ exports.connectToStudent = async (req, res, next) => {
                 throw (error);
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         await User.connectToStudent(userId, connectToId)
 
