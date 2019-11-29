@@ -15,5 +15,6 @@ router.patch('/register-erasmus', isAuth, userController.registerErasmus);
 router.get('/countries', userController.getCountries);
 router.post('/connectToStudent', userController.connectToStudent)
 router.post('/acceptConnection', userController.acceptConnection)
+router.get('/connectionStatus', userController.connectionStatus)
 
 module.exports = router;

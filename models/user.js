@@ -22,10 +22,13 @@ module.exports = class User {
         );
     }
     static setPasswordChangeExpiration(id) {
-        const currentDate = new Date();
+   
         // const sqlDateTime = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours() + 1}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
         const sqlDateTime = sqlDateConvert(new Date());
-        
+
+
+        console.log(sqlDateTime)
+
         return db.execute(`
             UPDATE student
             SET changePasswordExpiration = ?

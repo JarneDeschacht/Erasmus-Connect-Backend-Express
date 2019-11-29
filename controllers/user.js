@@ -214,6 +214,46 @@ exports.acceptConnection = async (req, res, next) => {
     }
 }
 
+exports.connectionStatus = async (req, res, next) => {
+    const userId = req.body.userId;
+    const connectToId = req.body.connectToId;
+
+    const response = {
+        connectionExists: false,
+        connectionRequestSent: false,
+        connectionRequestReceived: false
+    }
+
+    const [rows] = await UserConnection.getConnctionFromUsers(userId, connectToId)
+    const connection = rows[0]
+
+    try {
+        console.log(connection)
+        if (connection) {
+            if (connection.accepted === 'true') {
+                response.connectionExists = true;
+            }
+            else {
+                response.connectionRequestSent = true
+            }
+        }
+        else {
+            const [rows] = await UserConnection.getConnctionFromUsers(connectToId, userId)
+            const connection = rows[0]
+            if (connection) {
+                response.connectionRequestReceived = true
+            }
+        }
+        res.status(200).json({
+            ...response
+        });
+    } catch (err) {
+        res.status(200).json({
+            ...response
+        });
+    }
+}
+
 const fetchStudent = async (id) => {
     const [rows] = await User.findById(id);
     const user = rows[0];
