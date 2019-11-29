@@ -15,11 +15,9 @@ exports.registerErasmus = async (req, res, next) => {
         const erasmusUniversityName = req.body.erasmusUniversity;
         const erasmusCityName = req.body.erasmusCity;
         const erasmusCountryId = req.body.erasmusCountryId;
-        const imageUrl = '';
-        console.log(req.body.image);
-        console.log(req.file);
-        if (req.body.image) {
-            imageUrl = req.body.image.path.replace("\\", "/");
+        let imageUrl = '';
+        if (req.file) {
+            imageUrl = req.file.path.replace("\\", "/");
         }
 
         const homeCity = new City(null, homeCityName, homeCountryId);
