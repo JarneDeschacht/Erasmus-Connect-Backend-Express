@@ -31,12 +31,12 @@ module.exports = class UserConnection {
         `, [id])
     }
 
-    static getConnctionFromUsers(userId, connectToId) {
-        console.log('in sql query' + userId, connectToId)
+    static getConnctionFromUsers(senderId, receiverId) {
+        console.log(receiverId)
         return db.execute(`
             select * 
             from userConnection
-            where user1Id = ? AND user2Id=?;
-        `, [userId, connectToId])
+            where user1Id = ? AND user2Id = ?
+        `, [senderId, receiverId])
     }
 }

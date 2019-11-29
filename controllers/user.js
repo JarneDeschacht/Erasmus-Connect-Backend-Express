@@ -180,13 +180,13 @@ exports.connectToStudent = async (req, res, next) => {
 
 exports.acceptConnection = async (req, res, next) => {
     try {
-        const connectionId = req.body.connectionId;
-        const user2Id = req.body.userId;
+        const senderId = req.body.sender;
+        const receiverId = req.body.receiver
 
-        const [rows] = await UserConnection.getConnectionById(connectionId);
+        const [rows] = await UserConnection.getConnctionFromUsers(senderId, receiverId)
         const connection = rows[0]
 
-        if (connection.user2Id !== user2Id) {
+        if (connection.user2Id !== receiverId) {
             const error = new Error('the user that accepts the request was not found');
             error.statusCode = 401;
             throw (error);
@@ -198,12 +198,10 @@ exports.acceptConnection = async (req, res, next) => {
             throw (error);
         }
 
-        await UserConnection.acceptConnection(connectionId);
-
+        await UserConnection.acceptConnection(connection.connectionId);
         res.status(200).json({
             message: 'connection was accepted'
         });
-
     }
     catch (err) {
         if (!err.statusCode) {
@@ -213,9 +211,28 @@ exports.acceptConnection = async (req, res, next) => {
     }
 }
 
+exports.refuseConnection = async (req, res, next) => {
+    try{
+        const senderId = req.body.sender;
+        const receiverId = req.body.receiver
+
+
+    }catch(err){
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
 exports.connectionStatus = async (req, res, next) => {
-    const userId = req.body.userId;
-    const connectToId = req.body.connectToId;
+    // const userId = req.body.userId;
+    // const connectToId = req.body.connectToId;
+
+    const userId = req.params.sender;
+    const connectToId = req.params.receiver
+
+    const prodId = req.params.productId;
 
     const response = {
         connectionExists: false,
