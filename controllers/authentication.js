@@ -93,8 +93,10 @@ exports.forgotPassword = async (req, res, next) => {
             throw (error);
         }
 
+        console.log('authentication controller before')
         await User.setPasswordChangeExpiration(user.studentId)
 
+        console.log('authentication controller before')
 
         
         await transporter.sendMail({
@@ -131,9 +133,6 @@ exports.setNewPassword = async (req, res, next) => {
         const newPassword = req.body.newPassword
         const encryptedPassword = await bcrypt.hash(newPassword, 12)
 
-        
-       
-
         //checken timestamp
         const [rows] = await User.findById(studentId)
         const user = rows[0]
@@ -163,6 +162,4 @@ exports.setNewPassword = async (req, res, next) => {
         }
         next(err);
     }
-
-
 }

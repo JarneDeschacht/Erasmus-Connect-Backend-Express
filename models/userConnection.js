@@ -8,7 +8,6 @@ module.exports = class UserConnection {
         this.user2id = user2id;
     }
 
-
     static getConnectionById(id) {
         return db.execute(`
             SELECT * FROM userConnection
@@ -16,12 +15,12 @@ module.exports = class UserConnection {
         `, [id])
     }
 
-    static getConnectionByUser1Id(userId){
+    static getConnectionByUser1Id(userId) {
         return db.execute(`
             SELECT *
             FROM userConnection
             WHERE user1Id = ?
-        `,[userId])
+        `, [userId])
     }
 
     static acceptConnection(id) {
@@ -32,5 +31,12 @@ module.exports = class UserConnection {
         `, [id])
     }
 
-    
+    static getConnctionFromUsers(userId, connectToId) {
+        console.log('in sql query' + userId, connectToId)
+        return db.execute(`
+            select * 
+            from userConnection
+            where user1Id = ? AND user2Id=?;
+        `, [userId, connectToId])
+    }
 }
