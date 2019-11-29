@@ -168,21 +168,6 @@ exports.connectToStudent = async (req, res, next) => {
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         await User.connectToStudent(userId, connectToId)
 
         res.status(200).json({
@@ -215,8 +200,6 @@ exports.acceptConnection = async (req, res, next) => {
             error.statusCode = 401;
             throw (error);
         }
-
-
 
         await UserConnection.acceptConnection(connectionId);
 

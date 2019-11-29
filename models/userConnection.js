@@ -8,7 +8,6 @@ module.exports = class UserConnection {
         this.user2id = user2id;
     }
 
-
     static getConnectionById(id) {
         return db.execute(`
             SELECT * FROM userConnection

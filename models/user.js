@@ -1,5 +1,5 @@
 const db = require('../util/database');
-
+const sqlDateConvert = require('../util/sqlDateConvert')
 module.exports = class User {
     constructor(id, firstName, lastName, phonenumber, dateOfBirth, email, password, country_id) {
         this.id = id;
@@ -23,8 +23,9 @@ module.exports = class User {
     }
     static setPasswordChangeExpiration(id) {
         const currentDate = new Date();
-        const sqlDateTime = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours() + 1}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
-
+        // const sqlDateTime = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours() + 1}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
+        const sqlDateTime = sqlDateConvert(new Date());
+        
         return db.execute(`
             UPDATE student
             SET changePasswordExpiration = ?
