@@ -95,6 +95,8 @@ exports.forgotPassword = async (req, res, next) => {
 
         await User.setPasswordChangeExpiration(user.studentId)
 
+
+        
         await transporter.sendMail({
             to: email,
             from: 'esn-connect@erasmus.com',
@@ -104,7 +106,7 @@ exports.forgotPassword = async (req, res, next) => {
                 You have requested to change your password. <br/>
                 click on the folowing link and pick a new password. <br/>
 
-                <a href="http://localhost:3000/forgotPassword/${user.studentId}"> click here to reset password </a>
+                <a href="http://localhost:3000/forgotPassword/${user.userId}"> click here to reset password </a>
             </p>
             `
         })
@@ -124,15 +126,43 @@ exports.forgotPassword = async (req, res, next) => {
 
 
 exports.setNewPassword = async (req, res, next) => {
-    const studentId = req.body.studentId
-    const newPassword = req.body.newPassword
-    const encryptedPassword = await bcrypt.hash(newPassword, 12)
+    try {
+        const studentId = req.body.studentId
+        const newPassword = req.body.newPassword
+        const encryptedPassword = await bcrypt.hash(newPassword, 12)
 
-    await User.setNewPassword(studentId, encryptedPassword)
+        
+       
+
+        //checken timestamp
+        const [rows] = await User.findById(studentId)
+        const user = rows[0]
+        const expiryDate = user.changePasswordExpiration
+        const currentDate = new Date()
+
+        if (currentDate.getTime() > expiryDate.getTime()) {
+            const error = new Error('expiration time for changing password expired');
+            throw (error);
+        }
+
+        //verwijderen van timestamp als het werkt
+        await User.removePasswordExpiration(studentId);
 
 
+        await User.setNewPassword(studentId, encryptedPassword)
 
 
+        res.status(200).json({
+            message: 'password was updated',
+        });
+    }
+
+    catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
 
 
 }

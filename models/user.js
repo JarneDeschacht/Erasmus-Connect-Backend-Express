@@ -23,11 +23,7 @@ module.exports = class User {
     }
     static setPasswordChangeExpiration(id) {
         const currentDate = new Date();
-        const sqlDateTime = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDay()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
-
-        console.log(sqlDateTime)
-        console.log(id)
-
+        const sqlDateTime = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours() + 1}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
 
         return db.execute(`
             UPDATE student
@@ -35,9 +31,14 @@ module.exports = class User {
             WHERE studentId = ?`, [sqlDateTime, id]);
     }
 
+    static removePasswordExpiration(id) {
+        return db.execute(`
+            UPDATE student
+            SET changePasswordExpiration = null
+            WHERE studentId = ?`, [id]);
+    }
+
     static setNewPassword(id, newPassword) {
-        console.log(id)
-        console.log(newPassword)
         return db.execute(`
             UPDATE student
             SET password = ?
@@ -55,6 +56,7 @@ module.exports = class User {
         return db.execute('SELECT * FROM student WHERE student.email = ?', [email]);
     }
 
+    //get all students except the loged in one
     static getAll(id) {
         return db.execute(`
             SELECT * FROM student
@@ -72,5 +74,12 @@ module.exports = class User {
                 imageUrl = ?
             WHERE studentId = ?
         `, [homeCourse, erasmusCourse, homeUniversityId, erasmusUniversityId, imageUrl, userId])
+    }
+
+    static connectToStudent(id, connectToId) {
+        return db.execute(`
+            INSERT INTO userConnection (accepted, user1Id, user2Id)
+            VALUES ('false', ?, ?);
+        `, [id, connectToId])
     }
 }
