@@ -1,11 +1,11 @@
 const db = require('../util/database');
 
 module.exports = class UserConnection {
-    constructor(connectionId, accepted, user1Id, user2id) {
+    constructor(connectionId, accepted, senderId, receiverId) {
         this.connectionId = connectionId;
         this.accepted = accepted;
-        this.user1Id = user1Id;
-        this.user2id = user2id;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
     }
 
     static getConnectionById(id) {
