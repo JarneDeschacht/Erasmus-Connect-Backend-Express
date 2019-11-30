@@ -15,43 +15,43 @@ module.exports = class UserConnection {
         `, [id])
     }
 
-    static getConnectionByUser1Id(userId) {
+    static getConnectionBySenderId(userId) {
         return db.execute(`
             SELECT *
             FROM userConnection
-            WHERE user1Id = ?
+            WHERE senderId = ?
         `, [userId])
     }
 
     static getAllConnectionsFromUser(userId) {
         return db.execute(`
-            SELECT user1Id,user2Id, stud.lastName, stud.firstName
+            SELECT senderId, receiverId, stud.lastName, stud.firstName
             FROM userConnection as con
             JOIN student as stud
-            ON stud.studentId = con.user1Id
-            WHERE (user1Id = ? OR user2Id = ?)
+            ON stud.studentId = con.senderId
+            WHERE (senderId = ? OR receiverId = ?)
             AND accepted = 'true';
         `, [userId, userId])
     }
 
     static getSentPendingRequestsFromUser(userId) {
         return db.execute(`
-            SELECT user2Id, stud.lastName, stud.firstName
+            SELECT receiverId, stud.lastName, stud.firstName
             FROM userConnection as con
             JOIN student as stud
-            ON stud.studentId = con.user1Id
-            WHERE user1Id = ?
+            ON stud.studentId = con.senderId
+            WHERE senderId = ?
             AND accepted = 'false'
         `, [userId])
     }
 
     static getReceivedPendingRequestsFromUser(userId) {
         return db.execute(`
-            SELECT user1Id, stud.lastName, stud.firstName
+            SELECT senderId, stud.lastName, stud.firstName
             FROM userConnection as con
             JOIN student as stud
-            ON stud.studentId = con.user1Id
-            WHERE user2Id = ?
+            ON stud.studentId = con.senderId
+            WHERE receiverId = ?
             AND accepted = 'false'
         `, [userId])
     }
@@ -60,16 +60,23 @@ module.exports = class UserConnection {
         return db.execute(`
             select * 
             from userConnection
-            where user1Id = ? AND user2Id = ?
+            where senderId = ? AND receiverId = ?
         `, [senderId, receiverId])
     }
 
-    static acceptConnection(id) {
+    static connectToStudent(senderId, receiverId) {
+        return db.execute(`
+            INSERT INTO userConnection (accepted, senderId, receiverId)
+            VALUES ('false', ?, ?);
+        `, [senderId, receiverId])
+    }
+
+    static acceptConnection(connectionId) {
         return db.execute(`
             UPDATE userConnection
             SET accepted = 'true'
             WHERE connectionId = ?
-        `, [id])
+        `, [connectionId])
     }
 
     static deleteConnection(connectionId) {

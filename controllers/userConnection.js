@@ -13,14 +13,14 @@ exports.getConnections = async (req, res, next) => {
         // get all the accepted requests
         let [connectionRows] = await UserConnection.getAllConnectionsFromUser(userId);
         connectionRows.forEach(rec => {
-            if (rec.user1Id === userId) {
+            if (rec.senderId === userId) {
                 response.connections.push({
-                    userId: rec.user2Id
+                    userId: rec.receiverId
                 })
             }
             else {
                 response.connections.push({
-                    userId: rec.user1Id,
+                    userId: rec.senderId,
                     firstName: rec.firstName,
                     lastName: rec.lastName
                 })
@@ -28,9 +28,10 @@ exports.getConnections = async (req, res, next) => {
         })
 
         //get all the sended, still pending requests
-        let [sendedRows] = await UserConnection.getSentPendingRequestsFromUser(userId); sendedRows.forEach(rec => {
+        let [sendedRows] = await UserConnection.getSentPendingRequestsFromUser(userId); 
+        sendedRows.forEach(rec => {
             response.sended.push({
-                userId: rec.user2Id,
+                userId: rec.receiverId,
                 firstName: rec.firstName,
                 lastName: rec.lastName
             })
@@ -40,7 +41,7 @@ exports.getConnections = async (req, res, next) => {
         let [receivedRows] = await UserConnection.getReceivedPendingRequestsFromUser(userId);
         receivedRows.forEach(rec => {
             response.received.push({
-                userId: rec.user1Id,
+                userId: rec.senderId,
                 firstName: rec.firstName,
                 lastName: rec.lastName
             })
@@ -79,27 +80,27 @@ exports.connectToStudent = async (req, res, next) => {
             throw (error);
         }
 
-        [rows] = await UserConnection.getConnectionByUser1Id(userId)
+        [rows] = await UserConnection.getConnectionBySenderId(userId)
         let con = rows[0]
         if (con) {
-            if (con.user2Id == connectToId) {
+            if (con.receiverId == connectToId) {
                 const error = new Error('this connection already exists');
                 error.statusCode = 401;
                 throw (error);
             }
         }
 
-        [rows] = await UserConnection.getConnectionByUser1Id(connectToId)
+        [rows] = await UserConnection.getConnectionBySenderId(connectToId)
         con = rows[0]
         if (con) {
-            if (con.user2Id == userId) {
+            if (con.receiverId == userId) {
                 const error = new Error('this connection already exists');
                 error.statusCode = 401;
                 throw (error);
             }
         }
 
-        await User.connectToStudent(userId, connectToId)
+        await UserConnection.connectToStudent(userId, connectToId)
 
         res.status(200).json({
             message: 'connection made'

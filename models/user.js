@@ -76,10 +76,5 @@ module.exports = class User {
         `, [homeCourse, erasmusCourse, homeUniversityId, erasmusUniversityId, imageUrl, userId])
     }
 
-    static connectToStudent(id, connectToId) {
-        return db.execute(`
-            INSERT INTO userConnection (accepted, user1Id, user2Id)
-            VALUES ('false', ?, ?);
-        `, [id, connectToId])
-    }
+
 }
