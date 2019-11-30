@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authentication');
 const userRoutes = require('./routes/user');
 const chatRoutes = require('./routes/chat');
+const userConnectionRoutes = require('./routes/userConnection');
 const path = require('path');
 const multer = require('multer');
 const uuidv4 = require('uuid/v4');
@@ -40,8 +41,7 @@ app.use((req, res, next) => {
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(chatRoutes);
-
-
+app.use(userConnectionRoutes);
 
 app.use((error, req, res, next) => {
     console.log(error);

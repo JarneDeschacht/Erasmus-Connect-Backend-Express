@@ -93,11 +93,7 @@ exports.forgotPassword = async (req, res, next) => {
             throw (error);
         }
 
-        console.log('authentication controller before')
         await User.setPasswordChangeExpiration(user.studentId)
-
-        console.log('authentication controller before')
-
         
         await transporter.sendMail({
             to: email,
