@@ -13,20 +13,18 @@ exports.getConnections = async (req, res, next) => {
         // get all the accepted requests
         let [connectionRows] = await UserConnection.getAllConnectionsFromUser(userId);
         connectionRows.forEach(rec => {
-            console.log(rec.senderId.toString())
-            console.log(userId.toString())
             if (rec.senderId.toString() === userId.toString()) {
                 response.connections.push({
                     userId: rec.receiverId,
-                    firstName: rec.firstName,
-                    lastName: rec.lastName
+                    firstName: rec.receiverFirstName,
+                    lastName: rec.receiverLastName
                 })
             }
             else {
                 response.connections.push({
                     userId: rec.senderId,
-                    firstName: rec.firstName,
-                    lastName: rec.lastName
+                    firstName: rec.senderFirstName,
+                    lastName: rec.senderLastName
                 })
             }
         })
@@ -36,8 +34,8 @@ exports.getConnections = async (req, res, next) => {
         sendedRows.forEach(rec => {
             response.sended.push({
                 userId: rec.receiverId,
-                firstName: rec.firstName,
-                lastName: rec.lastName
+                firstName: rec.receiverFirstName,
+                lastName: rec.receiverLastName
             })
         })
 
@@ -46,8 +44,8 @@ exports.getConnections = async (req, res, next) => {
         receivedRows.forEach(rec => {
             response.received.push({
                 userId: rec.senderId,
-                firstName: rec.firstName,
-                lastName: rec.lastName
+                firstName: rec.senderFirstName,
+                lastName: rec.senderLastName
             })
         })
 

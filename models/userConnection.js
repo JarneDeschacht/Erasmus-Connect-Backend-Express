@@ -25,10 +25,12 @@ module.exports = class UserConnection {
 
     static getAllConnectionsFromUser(userId) {
         return db.execute(`
-            SELECT senderId, receiverId, stud.lastName, stud.firstName
+            SELECT con.senderId, con.receiverId, studSender.lastName as 'senderLastName', studSender.firstName as 'senderFirstName', studReceiver.lastName as 'receiverLastName', studReceiver.firstName as 'receiverFirstName'
             FROM userConnection as con
-            JOIN student as stud
-            ON stud.studentId = con.senderId
+            JOIN student as studSender
+            ON studSender.studentId = con.senderId
+            JOIN student as studReceiver
+            on studReceiver.studentId = con.receiverId
             WHERE (senderId = ? OR receiverId = ?)
             AND accepted = 'true';
         `, [userId, userId])
@@ -36,23 +38,25 @@ module.exports = class UserConnection {
 
     static getSentPendingRequestsFromUser(userId) {
         return db.execute(`
-            SELECT receiverId, stud.lastName, stud.firstName
-            FROM userConnection as con
-            JOIN student as stud
-            ON stud.studentId = con.senderId
+            SELECT con.senderId, con.receiverId, studSender.lastName as 'senderLastName', studSender.firstName as 'senderFirstName', studReceiver.lastName as 'receiverLastName', studReceiver.firstName as 'receiverFirstName'FROM userConnection as con
+            JOIN student as studSender
+            ON studSender.studentId = con.senderId
+            JOIN student as studReceiver
+            on studReceiver.studentId = con.receiverId
             WHERE senderId = ?
-            AND accepted = 'false'
+            AND accepted = 'false';
         `, [userId])
     }
 
     static getReceivedPendingRequestsFromUser(userId) {
         return db.execute(`
-            SELECT senderId, stud.lastName, stud.firstName
-            FROM userConnection as con
-            JOIN student as stud
-            ON stud.studentId = con.senderId
+            SELECT con.senderId, con.receiverId, studSender.lastName as 'senderLastName', studSender.firstName as 'senderFirstName', studReceiver.lastName as 'receiverLastName', studReceiver.firstName as 'receiverFirstName'FROM userConnection as con
+            JOIN student as studSender
+            ON studSender.studentId = con.senderId
+            JOIN student as studReceiver
+            on studReceiver.studentId = con.receiverId
             WHERE receiverId = ?
-            AND accepted = 'false'
+            AND accepted = 'false';
         `, [userId])
     }
 
