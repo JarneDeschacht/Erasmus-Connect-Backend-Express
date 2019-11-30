@@ -2,10 +2,10 @@ const mysql = require('mysql2');
 
 
 const pool = mysql.createPool({
-    host: 'sql7.freemysqlhosting.net',
-    user: 'sql7313407',
-    password: 'MJ1iTPx2vr',
-    database: 'sql7313407'
+    host: '34.76.128.41',
+    user: 'erasmusConnectAdmin',
+    password: 'r%UA93nu3#S4',
+    database: 'ErasmusConnect'
 });
 
 module.exports = pool.promise();
