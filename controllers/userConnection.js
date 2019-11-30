@@ -13,9 +13,13 @@ exports.getConnections = async (req, res, next) => {
         // get all the accepted requests
         let [connectionRows] = await UserConnection.getAllConnectionsFromUser(userId);
         connectionRows.forEach(rec => {
-            if (rec.senderId === userId) {
+            console.log(rec.senderId.toString())
+            console.log(userId.toString())
+            if (rec.senderId.toString() === userId.toString()) {
                 response.connections.push({
-                    userId: rec.receiverId
+                    userId: rec.receiverId,
+                    firstName: rec.firstName,
+                    lastName: rec.lastName
                 })
             }
             else {
