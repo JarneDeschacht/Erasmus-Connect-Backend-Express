@@ -148,7 +148,14 @@ exports.refuseConnection = async (req, res, next) => {
         const receiverId = req.body.receiver
 
         const [rows] = await UserConnection.getConnctionFromUsers(senderId, receiverId)
-        const connection = rows[0]
+       
+        let connection = rows[0]
+
+        if (!connection){
+            const [rws] = await UserConnection.getConnctionFromUsers(receiverId, senderId)
+            connection = rws[0]   
+        }
+
         if (!connection) {
             const error = new Error('there was no request between these users');
             error.statusCode = 401;

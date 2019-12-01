@@ -16,4 +16,12 @@ module.exports = class Message{
             VALUES (?,?,?,?);
         `, [this.sender, this.receiver, this.sendDate, this.content])
     }
+
+    static getMessagesFromUser(userId){
+        return db.execute(`
+            SELECT * from message
+            WHERE sender = ? OR receiver = ?
+            ORDER BY sendDate
+        `,[userId, userId])
+    }
 }
