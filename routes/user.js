@@ -5,7 +5,7 @@ const isAuth = require('../middleware/is-auth');
 const router = express.Router();
 
 router.get('/my-profile', isAuth, userController.getLoggedInUser);
-router.get('/students', isAuth, userController.getStudents);
+router.get('/students/:keyword', isAuth, userController.getStudents);
 router.get('/student/:studentId', isAuth, userController.getStudent);
 router.post('/register-erasmus', [
 ], isAuth, userController.registerErasmus);

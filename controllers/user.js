@@ -52,8 +52,10 @@ exports.registerErasmus = async (req, res, next) => {
 
 exports.getStudents = async (req, res, next) => {
     const userId = req.userId;
+    let keyword = req.params.keyword === 'EMPTY' ? '' : req.params.keyword;
+    keyword = '%' + keyword + '%';
     try {
-        const [users] = await User.getAll(userId);
+        const [users] = await User.getAll(userId, keyword);
         if (!users) {
             const error = new Error('No users found');
             error.statusCode = 401;
