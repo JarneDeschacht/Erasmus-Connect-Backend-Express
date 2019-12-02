@@ -11,7 +11,7 @@ exports.sendMessage = async (req, res, next) => {
         let message = await new Message(null, senderId, receiverId, sqlDateConvert(new Date()), content);
 
         message.save()
-    
+
         //send a message to all connected users
         //.broadcast does the same but does not send a message to the sender of the message
         io.getIo().emit('messages', {
@@ -22,7 +22,6 @@ exports.sendMessage = async (req, res, next) => {
         res.status(200).json({
             message: 'message was sent',
         });
-
 
     } catch (err) {
         if (!err.statusCode) {
@@ -39,7 +38,7 @@ exports.getMessagesFromUser = async (req, res, next) => {
 
         const [rows] = await Message.getMessagesFromUser(userId)
 
-        rows.forEach(mes => {   
+        rows.forEach(mes => {
             conversation.push(mes)
         })
 
@@ -54,4 +53,22 @@ exports.getMessagesFromUser = async (req, res, next) => {
         }
         next(err);
     }
+}
+
+
+exports.getConversation = async (req, res, next) => {
+    const chatWithUserId = req.params.chatWithUserId;
+    const loggedInUserId = req.params.loggedInUserId;
+
+    const [rows] = await Message.getConversation(loggedInUserId, chatWithUserId);
+    let conversation = []
+
+    rows.forEach(mes => {
+        conversation.push(mes)
+    })
+
+    res.status(200).json({
+        message: 'messages from conversation were returned',
+        messages: conversation
+    });
 }

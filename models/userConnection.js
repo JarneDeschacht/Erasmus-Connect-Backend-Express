@@ -25,7 +25,7 @@ module.exports = class UserConnection {
 
     static getAllConnectionsFromUser(userId) {
         return db.execute(`
-            SELECT con.senderId, con.receiverId, studSender.lastName as 'senderLastName', studSender.firstName as 'senderFirstName', studReceiver.lastName as 'receiverLastName', studReceiver.firstName as 'receiverFirstName'
+            SELECT con.senderId, con.receiverId, con.connectionId, studSender.lastName as 'senderLastName', studSender.firstName as 'senderFirstName', studReceiver.lastName as 'receiverLastName', studReceiver.firstName as 'receiverFirstName'
             FROM userConnection as con
             JOIN student as studSender
             ON studSender.studentId = con.senderId
@@ -38,7 +38,7 @@ module.exports = class UserConnection {
 
     static getSentPendingRequestsFromUser(userId) {
         return db.execute(`
-            SELECT con.senderId, con.receiverId, studSender.lastName as 'senderLastName', studSender.firstName as 'senderFirstName', studReceiver.lastName as 'receiverLastName', studReceiver.firstName as 'receiverFirstName'FROM userConnection as con
+            SELECT con.senderId, con.receiverId ,con.connectionId , studSender.lastName as 'senderLastName', studSender.firstName as 'senderFirstName', studReceiver.lastName as 'receiverLastName', studReceiver.firstName as 'receiverFirstName'FROM userConnection as con
             JOIN student as studSender
             ON studSender.studentId = con.senderId
             JOIN student as studReceiver
@@ -50,7 +50,7 @@ module.exports = class UserConnection {
 
     static getReceivedPendingRequestsFromUser(userId) {
         return db.execute(`
-            SELECT con.senderId, con.receiverId, studSender.lastName as 'senderLastName', studSender.firstName as 'senderFirstName', studReceiver.lastName as 'receiverLastName', studReceiver.firstName as 'receiverFirstName'FROM userConnection as con
+            SELECT con.senderId, con.receiverId, con.connectionId ,studSender.lastName as 'senderLastName', studSender.firstName as 'senderFirstName', studReceiver.lastName as 'receiverLastName', studReceiver.firstName as 'receiverFirstName'FROM userConnection as con
             JOIN student as studSender
             ON studSender.studentId = con.senderId
             JOIN student as studReceiver

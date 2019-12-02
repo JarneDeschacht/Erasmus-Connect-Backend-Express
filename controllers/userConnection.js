@@ -17,25 +17,28 @@ exports.getConnections = async (req, res, next) => {
                 response.connections.push({
                     userId: rec.receiverId,
                     firstName: rec.receiverFirstName,
-                    lastName: rec.receiverLastName
+                    lastName: rec.receiverLastName,
+                    connectionId: rec.connectionId
                 })
             }
             else {
                 response.connections.push({
                     userId: rec.senderId,
                     firstName: rec.senderFirstName,
-                    lastName: rec.senderLastName
+                    lastName: rec.senderLastName,
+                    connectionId: rec.connectionId
                 })
             }
         })
 
         //get all the sended, still pending requests
-        let [sendedRows] = await UserConnection.getSentPendingRequestsFromUser(userId); 
+        let [sendedRows] = await UserConnection.getSentPendingRequestsFromUser(userId);
         sendedRows.forEach(rec => {
             response.sended.push({
                 userId: rec.receiverId,
                 firstName: rec.receiverFirstName,
-                lastName: rec.receiverLastName
+                lastName: rec.receiverLastName,
+                connectionId: rec.connectionId
             })
         })
 
@@ -45,7 +48,8 @@ exports.getConnections = async (req, res, next) => {
             response.received.push({
                 userId: rec.senderId,
                 firstName: rec.senderFirstName,
-                lastName: rec.senderLastName
+                lastName: rec.senderLastName,
+                connectionId: rec.connectionId
             })
         })
 
@@ -121,13 +125,13 @@ exports.acceptConnection = async (req, res, next) => {
         const receiverId = req.body.receiver
 
         const [rows] = await UserConnection.getConnctionFromUsers(senderId, receiverId)
-        const connection = rows[0]
 
-        if (connection.accepted === 'true') {
-            const error = new Error('this connection already exists');
-            error.statusCode = 401;
-            throw (error);
-        }
+        const connection = rows[0]
+            if (connection.accepted === 'true') {
+                const error = new Error('this connection already exists');
+                error.statusCode = 401;
+                throw (error);
+            }  
 
         await UserConnection.acceptConnection(connection.connectionId);
         res.status(200).json({
@@ -148,12 +152,12 @@ exports.refuseConnection = async (req, res, next) => {
         const receiverId = req.body.receiver
 
         const [rows] = await UserConnection.getConnctionFromUsers(senderId, receiverId)
-       
+
         let connection = rows[0]
 
-        if (!connection){
+        if (!connection) {
             const [rws] = await UserConnection.getConnctionFromUsers(receiverId, senderId)
-            connection = rws[0]   
+            connection = rws[0]
         }
 
         if (!connection) {

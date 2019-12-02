@@ -24,4 +24,15 @@ module.exports = class Message{
             ORDER BY sendDate
         `,[userId, userId])
     }
+
+    static getConversation(userId, chatWithId){
+        return db.execute(`
+            SELECT * FROM message
+            WHERE (sender = ? OR receiver = ?)
+            AND
+            (sender = ? OR receiver = ?);
+        `, [userId,userId,  chatWithId, chatWithId])
+    }
+
+
 }
