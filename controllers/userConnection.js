@@ -18,7 +18,8 @@ exports.getConnections = async (req, res, next) => {
                     userId: rec.receiverId,
                     firstName: rec.receiverFirstName,
                     lastName: rec.receiverLastName,
-                    connectionId: rec.connectionId
+                    connectionId: rec.connectionId, 
+                    imageUrl: rec.receiverImageUrl
                 })
             }
             else {
@@ -26,7 +27,8 @@ exports.getConnections = async (req, res, next) => {
                     userId: rec.senderId,
                     firstName: rec.senderFirstName,
                     lastName: rec.senderLastName,
-                    connectionId: rec.connectionId
+                    connectionId: rec.connectionId,
+                    imageUrl: rec.senderImageUrl
                 })
             }
         })
@@ -38,7 +40,8 @@ exports.getConnections = async (req, res, next) => {
                 userId: rec.receiverId,
                 firstName: rec.receiverFirstName,
                 lastName: rec.receiverLastName,
-                connectionId: rec.connectionId
+                connectionId: rec.connectionId,
+                imageUrl: rec.receiverImageUrl
             })
         })
 
@@ -49,8 +52,10 @@ exports.getConnections = async (req, res, next) => {
                 userId: rec.senderId,
                 firstName: rec.senderFirstName,
                 lastName: rec.senderLastName,
-                connectionId: rec.connectionId
+                connectionId: rec.connectionId,
+                imageUrl: rec.senderImageUrl
             })
+            
         })
 
         //send the response

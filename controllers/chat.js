@@ -72,3 +72,35 @@ exports.getConversation = async (req, res, next) => {
         messages: conversation
     });
 }
+
+exports.getLastMessageOfConversationSaga = async (req, res, next) => {
+    const connection_ids = JSON.parse(req.params.connection_ids);
+    console.log(connection_ids)
+
+    let message = {
+        content: 'stop being a pussy, break the ice'
+    };
+
+    let lastMessages = {}
+
+    try {
+        for (let id of connection_ids){
+            const [rows] = await Message.getLastMessageOfConversation(id);
+            if (rows[0]) {
+                message = rows[0];
+            }
+
+            lastMessages[id] = message;
+        }
+        res.status(200).json({
+            ...lastMessages
+        });
+
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+
+}
