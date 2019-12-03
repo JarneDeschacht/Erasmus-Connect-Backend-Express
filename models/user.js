@@ -55,13 +55,21 @@ module.exports = class User {
         return db.execute('SELECT * FROM student WHERE student.email = ?', [email]);
     }
 
-    //get all students except the loged in one
-    static getAll(id) {
+    //get all students except the logged in one
+    static getAll(id,keyword) {
         return db.execute(`
-            SELECT * FROM student
-            JOIN country ON country_id = country.countryId
-            WHERE studentId <> ?
-            `, [id]);
+        SELECT * FROM student
+        JOIN country ON country_id = country.countryId
+        JOIN university on erasmusUniversity = university.universityId
+        JOIN city on city.cityId = university.city_id
+        JOIN country as erasmusCountry on erasmusCountry.countryId = city.country_id
+        WHERE studentId <> ? AND (
+            firstName LIKE ?
+            OR lastName LIKE ?
+            OR erasmusCountry.countryName LIKE ?
+            OR city.cityName LIKE ?
+            OR university.name LIKE ? )
+            `, [id,keyword,keyword,keyword,keyword,keyword]);
     }
     static registerErasmus(userId, homeCourse, homeUniversityId, erasmusCourse, erasmusUniversityId, imageUrl) {
         return db.execute(`

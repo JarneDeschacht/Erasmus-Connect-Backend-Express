@@ -171,12 +171,6 @@ exports.refuseConnection = async (req, res, next) => {
             throw (error);
         }
 
-        if (connection.accepted === 'true') {
-            const error = new Error('the request was already accepted');
-            error.statusCode = 401;
-            throw (error);
-        }
-
         await UserConnection.deleteConnection(connection.connectionId)
 
         res.status(200).json({
