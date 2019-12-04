@@ -211,7 +211,11 @@ exports.connectionStatus = async (req, res, next) => {
             const [rows] = await UserConnection.getConnctionFromUsers(connectToId, userId)
             const connection = rows[0]
             if (connection) {
-                response.connectionRequestReceived = true
+                if (connection.accepted === 'true') {
+                    response.connectionExists = true;
+                } else {
+                    response.connectionRequestReceived = true  
+                }
             }
         }
         res.status(200).json({
