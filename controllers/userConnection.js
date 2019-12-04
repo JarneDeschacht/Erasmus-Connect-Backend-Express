@@ -18,7 +18,8 @@ exports.getConnections = async (req, res, next) => {
                     userId: rec.receiverId,
                     firstName: rec.receiverFirstName,
                     lastName: rec.receiverLastName,
-                    connectionId: rec.connectionId
+                    connectionId: rec.connectionId, 
+                    imageUrl: rec.receiverImageUrl
                 })
             }
             else {
@@ -26,7 +27,8 @@ exports.getConnections = async (req, res, next) => {
                     userId: rec.senderId,
                     firstName: rec.senderFirstName,
                     lastName: rec.senderLastName,
-                    connectionId: rec.connectionId
+                    connectionId: rec.connectionId,
+                    imageUrl: rec.senderImageUrl
                 })
             }
         })
@@ -38,7 +40,8 @@ exports.getConnections = async (req, res, next) => {
                 userId: rec.receiverId,
                 firstName: rec.receiverFirstName,
                 lastName: rec.receiverLastName,
-                connectionId: rec.connectionId
+                connectionId: rec.connectionId,
+                imageUrl: rec.receiverImageUrl
             })
         })
 
@@ -49,8 +52,10 @@ exports.getConnections = async (req, res, next) => {
                 userId: rec.senderId,
                 firstName: rec.senderFirstName,
                 lastName: rec.senderLastName,
-                connectionId: rec.connectionId
+                connectionId: rec.connectionId,
+                imageUrl: rec.senderImageUrl
             })
+            
         })
 
         //send the response
@@ -206,7 +211,11 @@ exports.connectionStatus = async (req, res, next) => {
             const [rows] = await UserConnection.getConnctionFromUsers(connectToId, userId)
             const connection = rows[0]
             if (connection) {
-                response.connectionRequestReceived = true
+                if (connection.accepted === 'true') {
+                    response.connectionExists = true;
+                } else {
+                    response.connectionRequestReceived = true  
+                }
             }
         }
         res.status(200).json({
@@ -216,5 +225,28 @@ exports.connectionStatus = async (req, res, next) => {
         res.status(200).json({
             ...response
         });
+    }
+}
+
+exports.getNotificationStatus = async(req, res, next) =>{
+    try {
+        const userId = req.params.userId;
+        let response = false
+
+        // //get all the received, still pending requests
+        let [receivedRows] = await UserConnection.getReceivedPendingRequestsFromUser(userId);
+        if(receivedRows[0]){
+            response = true;
+        }
+
+        //send the response
+        res.status(200).json({
+            response
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 }
