@@ -1,8 +1,8 @@
 const User = require('../models/user');
 const City = require('../models/city');
 const University = require('../models/university');
-const UserConnection = require('../models/userConnection');
 const { transformUsers } = require('../util/transformations');
+const {validationResult} = require('express-validator')
 
 exports.registerErasmus = async (req, res, next) => {
     const userId = req.userId;
@@ -116,6 +116,86 @@ exports.getCountries = async (req, res, next) => {
                 }
             })
         });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+exports.editProfile = async (req, res, next) => {
+    const userId = req.userId;
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const error = new Error('Validation failed, entered data is incorrect');
+            error.statusCode = 422;
+            error.data = errors.array();
+            throw error;
+        }
+
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
+        const email = req.body.email;
+        const dateOfBirth = req.body.dateOfBirth;
+        const country_id = req.body.countryId;
+        const phoneNumber = req.body.phoneNumber;
+        const bio = req.body.bio;
+
+        await User.updateProfile(userId, firstName, lastName, email, dateOfBirth, country_id, phoneNumber, bio);
+
+        res.status(201).json({
+            message: 'User profile updated successfully'
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+exports.editErasmus = async (req, res, next) => {
+    const userId = req.userId;
+    try {
+        const homeCourse = req.body.homeCourse;
+        const homeUniversityName = req.body.homeUniversity;
+        const homeCityName = req.body.homeCity;
+        const homeCountryId = req.body.homeCountryId;
+        const erasmusCourse = req.body.erasmusCourse;
+        const erasmusUniversityName = req.body.erasmusUniversity;
+        const erasmusCityName = req.body.erasmusCity;
+        const erasmusCountryId = req.body.erasmusCountryId;
+
+        const homeCity = new City(null, homeCityName, homeCountryId);
+        [rows1] = await homeCity.save();
+        homeCity.id = rows1[0].cityid;
+
+        console.log(homeCity.id);
+
+        const homeUniversity = new University(null, homeUniversityName, homeCity.id);
+        [rows2] = await homeUniversity.save();
+        homeUniversity.id = rows2[0].uniId;
+
+        console.log(homeUniversity.id);
+
+        const erasmusCity = new City(null, erasmusCityName, erasmusCountryId);
+        [rows3] = await erasmusCity.save();
+        erasmusCity.id = rows3[0].cityid;
+
+        console.log(erasmusCity.id);
+
+        const erasmusUniversity = new University(null, erasmusUniversityName, erasmusCity.id);
+        [rows4] = await erasmusUniversity.save();
+        erasmusUniversity.id = rows4[0].uniId;
+
+        console.log(erasmusUniversity.id);
+
+        await User.updateErasmus(userId, homeCourse, homeUniversity.id, erasmusCourse, erasmusUniversity.id);
+
+        res.status(201).json({
+            message: 'Erasmus updated successfully',
+        });
+
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;

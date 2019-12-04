@@ -56,7 +56,7 @@ module.exports = class User {
     }
 
     //get all students except the logged in one
-    static getAll(id,keyword) {
+    static getAll(id, keyword) {
         return db.execute(`
         SELECT * FROM student
         JOIN country ON country_id = country.countryId
@@ -69,7 +69,7 @@ module.exports = class User {
             OR erasmusCountry.countryName LIKE ?
             OR city.cityName LIKE ?
             OR university.name LIKE ? )
-            `, [id,keyword,keyword,keyword,keyword,keyword]);
+            `, [id, keyword, keyword, keyword, keyword, keyword]);
     }
     static registerErasmus(userId, homeCourse, homeUniversityId, erasmusCourse, erasmusUniversityId, imageUrl) {
         return db.execute(`
@@ -81,6 +81,29 @@ module.exports = class User {
                 imageUrl = ?
             WHERE studentId = ?
         `, [homeCourse, erasmusCourse, homeUniversityId, erasmusUniversityId, imageUrl, userId])
+    }
+    static updateProfile(userId, firstName, lastname, email, dateOfBirth, countryId, phoneNumber, bio) {
+        return db.execute(`
+            UPDATE student
+            SET firstName = ?,
+                lastName = ?,
+                email = ?,
+                dateOfBirth = ?,
+                country_id = ?,
+                phoneNumber = ?,
+                bio = ?
+            WHERE studentId = ?
+        `, [firstName, lastname, email, dateOfBirth, countryId, phoneNumber, bio, userId])
+    }
+    static updateErasmus(userId, homeCourse, homeUniversityId, erasmusCourse, erasmusUniversityId) {
+        return db.execute(`
+            UPDATE student
+            SET homeCourse = ?,
+                erasmusCourse = ?,
+                homeUniversity = ?,
+                erasmusUniversity = ?
+            WHERE studentId = ?
+    `, [homeCourse, erasmusCourse, homeUniversityId, erasmusUniversityId, userId])
     }
 
 
