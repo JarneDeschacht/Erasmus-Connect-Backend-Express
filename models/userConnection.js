@@ -40,7 +40,7 @@ module.exports = class UserConnection {
             ON studSender.studentId = con.senderId
             JOIN student as studReceiver
             on studReceiver.studentId = con.receiverId
-            WHERE (senderId = 28 OR receiverId = 28)
+            WHERE (senderId = ? OR receiverId = ?)
             AND accepted = 'true';
         `, [userId, userId])
     }
