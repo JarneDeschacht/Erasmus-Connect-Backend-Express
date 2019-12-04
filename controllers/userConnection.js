@@ -227,3 +227,26 @@ exports.connectionStatus = async (req, res, next) => {
         });
     }
 }
+
+exports.getNotificationStatus = async(req, res, next) =>{
+    try {
+        const userId = req.params.userId;
+        let response = false
+
+        // //get all the received, still pending requests
+        let [receivedRows] = await UserConnection.getReceivedPendingRequestsFromUser(userId);
+        if(receivedRows[0]){
+            response = true;
+        }
+
+        //send the response
+        res.status(200).json({
+            response
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}

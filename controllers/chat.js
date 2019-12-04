@@ -78,7 +78,7 @@ exports.getLastMessageOfConversationSaga = async (req, res, next) => {
     console.log(connection_ids)
 
     let message = {
-        content: 'stop being a pussy, break the ice'
+        content: 'no messages yet'
     };
 
     let lastMessages = {}
