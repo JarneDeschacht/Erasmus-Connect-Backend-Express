@@ -36,7 +36,7 @@ module.exports = class Message {
 
     static getLastMessageOfConversation(connectionId) {
         return db.execute(`
-            SELECT mes.content
+            SELECT mes.content, mes.sendDate
             FROM message mes
             JOIN student sender
                 ON sender.studentId = mes.sender

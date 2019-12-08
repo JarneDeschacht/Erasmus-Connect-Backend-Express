@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const UserConnection = require('../models/userConnection');
+const Message = require('../models/message');
 
 exports.getConnections = async (req, res, next) => {
     try {
@@ -12,14 +13,27 @@ exports.getConnections = async (req, res, next) => {
 
         // get all the accepted requests
         let [connectionRows] = await UserConnection.getAllConnectionsFromUser(userId);
-        connectionRows.forEach(rec => {
+        // console.log(connectionRows)
+
+        for (let rec of connectionRows){
+            let [messageRows] = await Message.getLastMessageOfConversation(rec.connectionId);
+            let lastMessage = messageRows[0]
+            if(lastMessage === undefined){
+                lastMessage = {
+                    content: 'no message yet',
+                    sendDate: new Date('01/01/2000')
+                }
+            }
+        
             if (rec.senderId.toString() === userId.toString()) {
                 response.connections.push({
                     userId: rec.receiverId,
                     firstName: rec.receiverFirstName,
                     lastName: rec.receiverLastName,
-                    connectionId: rec.connectionId, 
-                    imageUrl: rec.receiverImageUrl
+                    connectionId: rec.connectionId,
+                    imageUrl: rec.receiverImageUrl,
+                    lastMessage: lastMessage.content,
+                    lastMessageDate: lastMessage.sendDate
                 })
             }
             else {
@@ -28,10 +42,15 @@ exports.getConnections = async (req, res, next) => {
                     firstName: rec.senderFirstName,
                     lastName: rec.senderLastName,
                     connectionId: rec.connectionId,
-                    imageUrl: rec.senderImageUrl
+                    imageUrl: rec.senderImageUrl,
+                    lastMessage: lastMessage.content,
+                    lastMessageDate: lastMessage.sendDate
                 })
             }
-        })
+        }
+
+
+
 
         //get all the sended, still pending requests
         let [sendedRows] = await UserConnection.getSentPendingRequestsFromUser(userId);
@@ -55,7 +74,7 @@ exports.getConnections = async (req, res, next) => {
                 connectionId: rec.connectionId,
                 imageUrl: rec.senderImageUrl
             })
-            
+
         })
 
         //send the response
@@ -132,11 +151,11 @@ exports.acceptConnection = async (req, res, next) => {
         const [rows] = await UserConnection.getConnctionFromUsers(senderId, receiverId)
 
         const connection = rows[0]
-            if (connection.accepted === 'true') {
-                const error = new Error('this connection already exists');
-                error.statusCode = 401;
-                throw (error);
-            }  
+        if (connection.accepted === 'true') {
+            const error = new Error('this connection already exists');
+            error.statusCode = 401;
+            throw (error);
+        }
 
         await UserConnection.acceptConnection(connection.connectionId);
         res.status(200).json({
@@ -214,7 +233,7 @@ exports.connectionStatus = async (req, res, next) => {
                 if (connection.accepted === 'true') {
                     response.connectionExists = true;
                 } else {
-                    response.connectionRequestReceived = true  
+                    response.connectionRequestReceived = true
                 }
             }
         }
@@ -228,14 +247,14 @@ exports.connectionStatus = async (req, res, next) => {
     }
 }
 
-exports.getNotificationStatus = async(req, res, next) =>{
+exports.getNotificationStatus = async (req, res, next) => {
     try {
         const userId = req.params.userId;
         let response = false
 
         // //get all the received, still pending requests
         let [receivedRows] = await UserConnection.getReceivedPendingRequestsFromUser(userId);
-        if(receivedRows[0]){
+        if (receivedRows[0]) {
             response = true;
         }
 

@@ -91,6 +91,10 @@ exports.getLastMessageOfConversationSaga = async (req, res, next) => {
             }
 
             lastMessages[id] = message;
+            
+             message = {
+                content: 'no messages yet'
+            };
         }
         res.status(200).json({
             ...lastMessages
