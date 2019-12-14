@@ -25,21 +25,7 @@ module.exports = class UserConnection {
 
     static getAllConnectionsFromUser(userId) {
         return db.execute(`
-            SELECT 
-                con.senderId, 
-                con.receiverId, 
-                con.connectionId, 
-                studSender.lastName as 'senderLastName', 
-                studSender.firstName as 'senderFirstName', 
-                studSender.imageUrl as 'senderImageUrl',
-                studReceiver.lastName as 'receiverLastName', 
-                studReceiver.firstName as 'receiverFirstName',
-                studReceiver.imageUrl as 'receiverImageUrl'
-            FROM userConnection as con
-            JOIN student as studSender
-            ON studSender.studentId = con.senderId
-            JOIN student as studReceiver
-            on studReceiver.studentId = con.receiverId
+            SELECT * FROM userConnectionDetails
             WHERE (senderId = ? OR receiverId = ?)
             AND accepted = 'true';
         `, [userId, userId])
@@ -47,21 +33,7 @@ module.exports = class UserConnection {
 
     static getSentPendingRequestsFromUser(userId) {
         return db.execute(`
-            SELECT 
-                con.senderId, 
-                con.receiverId ,
-                con.connectionId , 
-                studSender.lastName as 'senderLastName', 
-                studSender.firstName as 'senderFirstName',
-                studSender.imageUrl as 'senderImageUrl',
-                studReceiver.lastName as 'receiverLastName', 
-                studReceiver.firstName as 'receiverFirstName',
-                studReceiver.imageUrl as 'receiverImageUrl'
-            FROM userConnection as con
-            JOIN student as studSender
-            ON studSender.studentId = con.senderId
-            JOIN student as studReceiver
-            on studReceiver.studentId = con.receiverId
+            SELECT * FROM userConnectionDetails
             WHERE senderId = ?
             AND accepted = 'false';
         `, [userId])
@@ -69,20 +41,7 @@ module.exports = class UserConnection {
 
     static getReceivedPendingRequestsFromUser(userId) {
         return db.execute(`
-            SELECT con.senderId,
-                con.receiverId, 
-                con.connectionId ,
-                studSender.lastName as 'senderLastName', 
-                studSender.firstName as 'senderFirstName', 
-                studSender.imageUrl as 'senderImageUrl',
-                studReceiver.lastName as 'receiverLastName', 
-                studReceiver.firstName as 'receiverFirstName',
-                studReceiver.imageUrl as 'receiverImageUrl'
-            FROM userConnection as con
-            JOIN student as studSender
-            ON studSender.studentId = con.senderId
-            JOIN student as studReceiver
-            on studReceiver.studentId = con.receiverId
+            SELECT * FROM userConnectionDetails
             WHERE receiverId = ?
             AND accepted = 'false';
         `, [userId])

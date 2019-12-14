@@ -17,4 +17,10 @@ module.exports = class City {
     static getAllCountries() {
         return db.execute('SELECT * FROM country ORDER BY countryName');
     }
+    static getCityByName(name){
+        return db.execute(`
+            SELECT * FROM city
+            WHERE cityName = ?;
+        `,[name])
+    }
 }

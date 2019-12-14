@@ -75,7 +75,7 @@ exports.getConversation = async (req, res, next) => {
 
 exports.getLastMessageOfConversationSaga = async (req, res, next) => {
     const connection_ids = JSON.parse(req.params.connection_ids);
-    console.log(connection_ids)
+
 
     let message = {
         content: 'no messages yet'

@@ -13,7 +13,6 @@ exports.getConnections = async (req, res, next) => {
 
         // get all the accepted requests
         let [connectionRows] = await UserConnection.getAllConnectionsFromUser(userId);
-        // console.log(connectionRows)
 
         for (let rec of connectionRows){
             let [messageRows] = await Message.getLastMessageOfConversation(rec.connectionId);
