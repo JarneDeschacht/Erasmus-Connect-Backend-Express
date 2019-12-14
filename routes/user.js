@@ -12,6 +12,7 @@ router.get('/student/:studentId', isAuth, userController.getStudent);
 router.post('/register-erasmus', [
 ], isAuth, userController.registerErasmus);
 router.get('/countries', userController.getCountries);
+router.post('/uploadProfilePicture', userController.uploadProfilePicture)
 router.patch('/register-erasmus', isAuth, userController.registerErasmus);
 router.patch('/edit-profile', [
     body('firstName').trim().isLength({ min: 1, max: 100 }).withMessage('Firstname is required and may not contain more than 100 characters'),

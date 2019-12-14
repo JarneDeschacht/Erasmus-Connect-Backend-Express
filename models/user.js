@@ -106,5 +106,13 @@ module.exports = class User {
     `, [homeCourse, erasmusCourse, homeUniversityId, erasmusUniversityId, userId])
     }
 
+    static updateProfilePicture(userId, imageUrl){
+        return db.execute(`
+            UPDATE student
+            set imageUrl = ?
+            where studentId = ?;
+        `,[imageUrl, userId])
+    }
+
 
 }

@@ -2,7 +2,7 @@ const User = require('../models/user');
 const City = require('../models/city');
 const University = require('../models/university');
 const { transformUsers } = require('../util/transformations');
-const {validationResult} = require('express-validator')
+const { validationResult } = require('express-validator')
 
 exports.registerErasmus = async (req, res, next) => {
     const userId = req.userId;
@@ -43,6 +43,30 @@ exports.registerErasmus = async (req, res, next) => {
         });
 
     } catch (err) {
+
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
+exports.uploadProfilePicture = async (req, res, next) => {
+    try {
+        const userId = req.body.userId;
+        let imageUrl = '';
+        if (req.file) {
+            imageUrl = req.file.path.replace("\\", "/");
+        }
+
+        await User.updateProfilePicture(userId, imageUrl);
+
+        res.status(201).json({
+            message: 'Picture was uploaded',
+        });
+    }
+    catch (err) {
+
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -204,6 +228,9 @@ exports.editErasmus = async (req, res, next) => {
     }
 }
 
+
+
+
 const fetchStudent = async (id) => {
     const [rows] = await User.findById(id);
     const user = rows[0];
@@ -214,4 +241,5 @@ const fetchStudent = async (id) => {
     }
     return user;
 }
+
 
