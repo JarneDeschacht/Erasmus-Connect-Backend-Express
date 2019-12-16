@@ -18,7 +18,6 @@ module.exports = class City {
         return db.execute('SELECT * FROM country ORDER BY countryName');
     }
     static getCityByName(name){
-        console.log('in city   '+ name)
         return db.execute(`
             SELECT * FROM city
             WHERE cityName = ?;
@@ -30,5 +29,13 @@ module.exports = class City {
             select * from city
             where cityId = ,
         `,[id])
+    }
+
+    static addCity(name, countryId){
+        console.log('lel')
+        db.execute(`
+            insert into city (cityName, country_id)
+            values(?, ?);
+        `,[name, countryId])
     }
 }

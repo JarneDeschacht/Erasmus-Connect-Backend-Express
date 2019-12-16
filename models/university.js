@@ -33,4 +33,11 @@ module.exports = class University {
             where name = ?
         `,[name]  )
     }
+
+    static addUniversity(name, cityId){
+        db.execute(`
+            insert into university (name, city_id)
+            values(?, ?);
+        `, [name, cityId])
+    }
 }
