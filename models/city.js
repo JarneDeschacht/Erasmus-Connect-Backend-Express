@@ -23,4 +23,18 @@ module.exports = class City {
             WHERE cityName = ?;
         `,[name])
     }
+
+    static getCityById(id){
+        return db.execute(`
+            select * from city
+            where cityId = ,
+        `,[id])
+    }
+
+    static addCity(name, countryId){
+        db.execute(`
+            insert into city (cityName, country_id)
+            values(?, ?);
+        `,[name, countryId])
+    }
 }

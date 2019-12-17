@@ -6,10 +6,17 @@ module.exports = class University {
         this.name = name;
         this.cityId = cityId;
     }
-    save() {
-        return db.execute("CALL insert_university(?,?,@uniId)", [this.name, this.cityId]).then(() => {
-            return db.execute("SELECT @uniId AS uniId");
-        }).catch(err => console.log(err));
+    async save() {
+        // return db.execute("CALL insert_university(?,?,@uniId)", [this.name, this.cityId]).then(() => {
+        //     return db.execute("SELECT @uniId AS uniId");
+        // }).catch(err => console.log(err));
+
+        const res = await db.execute(`
+             CALL insert_university(?,?,@uniId)
+        `, [this.name, this.cityId])
+
+        return db.execute("SELECT @uniId AS uniId");
+
     }
     static getById(id) {
         return db.execute(`
@@ -18,5 +25,19 @@ module.exports = class University {
             JOIN country on country.countryId = city.country_id
             WHERE university.universityId = ?
         `, [id]);
+    }
+
+    static getByName(name) {
+        return db.execute(`
+            select * from university
+            where name = ?
+        `,[name]  )
+    }
+
+    static addUniversity(name, cityId){
+        db.execute(`
+            insert into university (name, city_id)
+            values(?, ?);
+        `, [name, cityId])
     }
 }
