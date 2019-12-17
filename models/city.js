@@ -32,7 +32,6 @@ module.exports = class City {
     }
 
     static addCity(name, countryId){
-        console.log('lel')
         db.execute(`
             insert into city (cityName, country_id)
             values(?, ?);
