@@ -94,7 +94,7 @@ exports.forgotPassword = async (req, res, next) => {
         }
 
         await User.setPasswordChangeExpiration(user.studentId)
-        
+
         await transporter.sendMail({
             to: email,
             from: 'esn-connect@erasmus.com',
@@ -104,7 +104,7 @@ exports.forgotPassword = async (req, res, next) => {
                 You have requested to change your password. <br/>
                 click on the folowing link and pick a new password. <br/>
 
-                <a href="http://localhost:3000/forgotPassword/${user.userId}"> click here to reset password </a>
+                <a href="http://localhost:3000/forgotPassword/${user.studentId}"> click here to reset password </a>
             </p>
             `
         })
