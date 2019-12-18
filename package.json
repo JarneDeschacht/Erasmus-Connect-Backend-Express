@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Backend for Erasmus-Connect. A social platform to bring Erasmus students together",
   "main": "app.js",
+  "engines": {
+    "node": "10.16.3"
+  },
   "scripts": {
     "start": "nodemon app.js"
   },
