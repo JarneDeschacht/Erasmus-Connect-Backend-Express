@@ -25,13 +25,10 @@ exports.registerErasmus = async (req, res, next) => {
         let erCityFound = false;
         let erUniFound = false;
 
-        console.log('1')
         let homeCity = null;
         while (homeCityFound === false) {
             const [cityByName] = await City.getCityByName(homeCityName);
-
             if (cityByName[0] === null || cityByName[0] === undefined) {
-                console.log('home city did not exist yet, lets creat it')
 
                 await City.addCity(homeCityName, homeCountryId);
 
@@ -44,21 +41,16 @@ exports.registerErasmus = async (req, res, next) => {
                 homeCity = cityByName[0]
             }
 
-            console.log(homeCity)
-
             if (homeCity.cityId !== null || homeCity.cityId !== undefined) {
                 homeCityFound = true;
             }
         }
-
-        console.log('2')
 
         let homeUniversity = null;
         while (homeUniFound === false) {
             const [unyByName] = await University.getByName(homeUniversityName)
 
             if (unyByName[0] === null || unyByName[0] === undefined) {
-                console.log('home university did not exist yet, lets creat it')
 
                 await University.addUniversity(homeUniversityName, homeCity.cityId);
 
@@ -71,21 +63,16 @@ exports.registerErasmus = async (req, res, next) => {
                 homeUniversity = unyByName[0]
             }
 
-            console.log(homeUniversity)
-
             if (homeUniversity.universityId != null || homeUniversity.universityId != undefined) {
                 homeUniFound = true;
             }
         }
 
-        console.log('3')
         let erasmusCity = null;
         while (erCityFound === false) {
             const [cityByName] = await City.getCityByName(erasmusCityName);
 
             if (cityByName[0] === null || cityByName[0] === undefined) {
-                console.log('erasmus city did not exist yet, lets creat it')
-
                 await City.addCity(erasmusCityName, erasmusCountryId);
 
                 while (erasmusCity === null || erasmusCity === undefined) {
@@ -102,15 +89,12 @@ exports.registerErasmus = async (req, res, next) => {
             }
         }
 
-        console.log('4')
 
         let erasmusUniversity = null;
         while (erUniFound === false) {
             const [unyByName] = await University.getByName(erasmusUniversityName)
 
             if (unyByName[0] === null || unyByName[0] === undefined) {
-                console.log('home university did not exist yet, lets creat it')
-
                 await University.addUniversity(erasmusUniversityName, erasmusCity.cityId);
                 while (erasmusUniversity === null || erasmusUniversity === undefined) {
                     const [rows4] = await University.getByName(erasmusUniversityName)
@@ -126,16 +110,6 @@ exports.registerErasmus = async (req, res, next) => {
             }
         }
 
-
-        console.log('5');
-
-        console.log(userId)
-        console.log(homeCourse)
-        console.log(homeUniversity.universityId)
-        console.log(erasmusCourse)
-        console.log(erasmusUniversity.universityId)
-
-
         await User.registerErasmus(userId, homeCourse, homeUniversity.universityId, erasmusCourse, erasmusUniversity.universityId, imageUrl);
 
         res.status(201).json({
@@ -143,7 +117,6 @@ exports.registerErasmus = async (req, res, next) => {
         });
 
     } catch (err) {
-
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -158,15 +131,12 @@ exports.uploadProfilePicture = async (req, res, next) => {
         if (req.file) {
             imageUrl = req.file.path.replace("\\", "/");
         }
-
         await User.updateProfilePicture(userId, imageUrl);
-
         res.status(201).json({
             message: 'Picture was uploaded',
         });
     }
     catch (err) {
-
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -295,16 +265,11 @@ exports.editErasmus = async (req, res, next) => {
         let erCityFound = false;
         let erUniFound = false;
 
-        console.log('1')
         let homeCity = null;
         while (homeCityFound === false) {
             const [cityByName] = await City.getCityByName(homeCityName);
-
             if (cityByName[0] === null || cityByName[0] === undefined) {
-                console.log('home city did not exist yet, lets creat it')
-
                 await City.addCity(homeCityName, homeCountryId);
-
                 while (homeCity === null || homeCity === undefined) {
                     const [rows1] = await City.getCityByName(homeCityName);
                     homeCity = rows1[0];
@@ -314,24 +279,16 @@ exports.editErasmus = async (req, res, next) => {
                 homeCity = cityByName[0]
             }
 
-            console.log(homeCity)
-
             if (homeCity.cityId !== null || homeCity.cityId !== undefined) {
                 homeCityFound = true;
             }
         }
 
-        console.log('2')
-
         let homeUniversity = null;
         while (homeUniFound === false) {
             const [unyByName] = await University.getByName(homeUniversityName)
-
             if (unyByName[0] === null || unyByName[0] === undefined) {
-                console.log('home university did not exist yet, lets creat it')
-
                 await University.addUniversity(homeUniversityName, homeCity.cityId);
-
                 while (homeUniversity === null || homeUniversity === undefined) {
                     const [rows2] = await University.getByName(homeUniversityName)
                     homeUniversity = rows2[0]
@@ -341,21 +298,16 @@ exports.editErasmus = async (req, res, next) => {
                 homeUniversity = unyByName[0]
             }
 
-            console.log(homeUniversity)
-
             if (homeUniversity.universityId != null || homeUniversity.universityId != undefined) {
                 homeUniFound = true;
             }
         }
 
-        console.log('3')
         let erasmusCity = null;
         while (erCityFound === false) {
             const [cityByName] = await City.getCityByName(erasmusCityName);
 
             if (cityByName[0] === null || cityByName[0] === undefined) {
-                console.log('erasmus city did not exist yet, lets creat it')
-
                 await City.addCity(erasmusCityName, erasmusCountryId);
 
                 while (erasmusCity === null || erasmusCity === undefined) {
@@ -372,14 +324,11 @@ exports.editErasmus = async (req, res, next) => {
             }
         }
 
-        console.log('4')
-
         let erasmusUniversity = null;
         while (erUniFound === false) {
             const [unyByName] = await University.getByName(erasmusUniversityName)
 
             if (unyByName[0] === null || unyByName[0] === undefined) {
-                console.log('home university did not exist yet, lets creat it')
 
                 await University.addUniversity(erasmusUniversityName, erasmusCity.cityId);
                 while (erasmusUniversity === null || erasmusUniversity === undefined) {
@@ -396,19 +345,13 @@ exports.editErasmus = async (req, res, next) => {
             }
         }
 
-
-        console.log('5');
-
-        console.log(userId)
-        console.log(homeCourse)
-        console.log(homeUniversity.universityId)
-        console.log(erasmusCourse)
-        console.log(erasmusUniversity.universityId)
         await User.updateErasmus(userId, homeCourse, homeUniversity.universityId, erasmusCourse, erasmusUniversity.universityId);
-
 
         const [user] = await User.findById(userId)
 
+        const userAr = Array();
+        userAr.push(user)
+        
         res.status(201).json({
             message: 'Erasmus updated successfully',
             user: transformUsers([user[0]])
@@ -421,9 +364,6 @@ exports.editErasmus = async (req, res, next) => {
         next(err);
     }
 }
-
-
-
 
 const fetchStudent = async (id) => {
     const [rows] = await User.findById(id);
