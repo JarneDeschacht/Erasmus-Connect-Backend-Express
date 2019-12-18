@@ -89,12 +89,12 @@ exports.registerErasmus = async (req, res, next) => {
             }
         }
 
-
         let erasmusUniversity = null;
         while (erUniFound === false) {
             const [unyByName] = await University.getByName(erasmusUniversityName)
 
             if (unyByName[0] === null || unyByName[0] === undefined) {
+
                 await University.addUniversity(erasmusUniversityName, erasmusCity.cityId);
                 while (erasmusUniversity === null || erasmusUniversity === undefined) {
                     const [rows4] = await University.getByName(erasmusUniversityName)
@@ -109,6 +109,14 @@ exports.registerErasmus = async (req, res, next) => {
                 erUniFound = true;
             }
         }
+
+        console.log('home')
+        console.log(homeCourse)
+        console.log(homeUniversity)
+        console.log(erasmusCourse)
+
+
+
 
         await User.registerErasmus(userId, homeCourse, homeUniversity.universityId, erasmusCourse, erasmusUniversity.universityId, imageUrl);
 
